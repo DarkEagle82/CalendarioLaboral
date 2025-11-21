@@ -1,0 +1,18 @@
+{
+  "appTitle": "Lista de Tareas",
+  "tasks": "Tareas",
+  "calendar": "Calendario",
+  "settings": "Configuración",
+  "addTask": "Añadir Tarea",
+  "editTask": "Editar Tarea",
+  "deleteTask": "Eliminar Tarea",
+  "noTasksYet": "No hay tareas. ¡Añade una!",
+  "taskTitle": "Título de la Tarea",
+  "enterTaskTitle": "Introduce el título de la tarea",
+  "add": "AÑADIR",
+  "cancel": "CANCELAR",
+  "darkMode": "Modo Oscuro",
+  "chooseThemeColor": "Elegir Color del Tema",
+  "pickAColor": "Elige un color",
+  "done": "Hecho"
+}

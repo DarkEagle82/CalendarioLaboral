@@ -1,0 +1,41 @@
+name: myapp
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.9.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5+1
+  google_fonts: ^6.3.2
+  table_calendar: ^3.2.0
+  intl: ^0.20.2
+  shared_preferences: ^2.5.3
+  flutter_colorpicker: ^1.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_intl: ^0.0.1
+
+dependency_overrides:
+  characters: 1.4.1
+  material_color_utilities: 0.13.0
+  meta: 1.17.0
+  matcher: 0.12.18
+  test_api: 0.7.8
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+flutter_intl:
+  enabled: true

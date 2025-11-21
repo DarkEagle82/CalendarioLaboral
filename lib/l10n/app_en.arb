@@ -1,0 +1,18 @@
+{
+  "appTitle": "To-Do List",
+  "tasks": "Tasks",
+  "calendar": "Calendar",
+  "settings": "Settings",
+  "addTask": "Add Task",
+  "editTask": "Edit Task",
+  "deleteTask": "Delete Task",
+  "noTasksYet": "No tasks yet. Add one!",
+  "taskTitle": "Task Title",
+  "enterTaskTitle": "Enter task title",
+  "add": "ADD",
+  "cancel": "CANCEL",
+  "darkMode": "Dark Mode",
+  "chooseThemeColor": "Choose App Theme Color",
+  "pickAColor": "Pick a color",
+  "done": "Done"
+}
