@@ -4,7 +4,8 @@ import 'package:provider/provider.dart';
 import 'providers/task_provider.dart';
 import 'providers/theme_provider.dart';
 import 'screens/home_page.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyApp());

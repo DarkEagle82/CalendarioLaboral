@@ -4,7 +4,7 @@ import '../providers/task_provider.dart';
 import '../models/task.dart';
 import 'calendar_screen.dart';
 import 'settings_screen.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../l10n/app_localizations.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
