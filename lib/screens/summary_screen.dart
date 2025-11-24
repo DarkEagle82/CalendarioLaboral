@@ -1,106 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:myapp/l10n/app_localizations.dart';
+import 'package:myapp/providers/calendar_provider.dart';
 
-import '../providers/calendar_provider.dart';
-
-class SummaryScreen extends StatelessWidget {
+class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
 
   @override
+  State<SummaryScreen> createState() => _SummaryScreenState();
+}
+
+class _SummaryScreenState extends State<SummaryScreen> with AutomaticKeepAliveClientMixin {
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final l10n = AppLocalizations.of(context)!;
     final calendarProvider = Provider.of<CalendarProvider>(context);
 
-    // TODO: Implementar la lógica de cálculo en el provider
-    final summary = calendarProvider.calculateSummary();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Resumen Anual'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16.0),
-        children: <Widget>[
-          _buildSummaryCard(
-            context: context,
-            title: 'Jornada Laboral',
-            items: {
-              'Días laborables totales': summary['workDays'].toString(),
-              'Horas objetivo anuales': summary['targetHours'].toString(),
-            },
-          ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(l10n.summary, style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 16),
-          _buildSummaryCard(
-            context: context,
-            title: 'Ausencias',
-            items: {
-              'Días de vacaciones': summary['vacationDays'].toString(),
-              'Días festivos': summary['holidayDays'].toString(),
-            },
-          ),
-          const SizedBox(height: 16),
-          _buildSummaryCard(
-            context: context,
-            title: 'Cómputo de Horas',
-            items: {
-              'Horas trabajadas (estimado)': summary['workedHours'].toStringAsFixed(2),
-              'Horas restantes': summary['remainingHours'].toStringAsFixed(2),
-            },
-            progress: summary['progress'] as double,
-          ),
+          _buildSummaryRow(l10n.totalHoursWorked, calendarProvider.totalHoursWorked.toStringAsFixed(2)),
+          const SizedBox(height: 8),
+          _buildSummaryRow(l10n.annualHours, calendarProvider.annualHours.toStringAsFixed(2)),
+          const SizedBox(height: 8),
+          _buildSummaryRow(l10n.remainingHours, calendarProvider.remainingHours.toStringAsFixed(2)),
+          const SizedBox(height: 8),
+          if (calendarProvider.equivalentDays > 0)
+            _buildSummaryRow(l10n.equivalentDays, calendarProvider.equivalentDays.toStringAsFixed(2)),
+          const SizedBox(height: 8),
+          _buildSummaryRow(l10n.totalWorkingDays, calendarProvider.totalWorkingDays.toString()),
         ],
       ),
     );
   }
 
-  Widget _buildSummaryCard({
-    required BuildContext context,
-    required String title,
-    required Map<String, String> items,
-    double? progress,
-  }) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(title, style: textTheme.titleLarge?.copyWith(color: colorScheme.primary)),
-            const Divider(height: 20, thickness: 1),
-            ...items.entries.map((entry) => Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(entry.key, style: textTheme.bodyMedium),
-                  Text(entry.value, style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold)),
-                ],
-              ),
-            )),
-            if (progress != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Progreso', style: textTheme.bodyMedium),
-                    const SizedBox(height: 8),
-                    LinearProgressIndicator(
-                      value: progress,
-                      minHeight: 10,
-                      backgroundColor: colorScheme.surfaceContainerHighest,
-                      valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
-                    ),
-                  ],
-                ),
-              ),
-          ],
-        ),
-      ),
+  Widget _buildSummaryRow(String title, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(title, style: const TextStyle(fontSize: 16)),
+        Text(value, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+      ],
     );
   }
 }

@@ -100,99 +100,177 @@ abstract class AppLocalizations {
 
   /// No description provided for @appTitle.
   ///
-  /// In en, this message translates to:
-  /// **'To-Do List'**
+  /// In es, this message translates to:
+  /// **'Calendario Laboral'**
   String get appTitle;
-
-  /// No description provided for @tasks.
-  ///
-  /// In en, this message translates to:
-  /// **'Tasks'**
-  String get tasks;
 
   /// No description provided for @calendar.
   ///
-  /// In en, this message translates to:
-  /// **'Calendar'**
+  /// In es, this message translates to:
+  /// **'Calendario'**
   String get calendar;
 
   /// No description provided for @settings.
   ///
-  /// In en, this message translates to:
-  /// **'Settings'**
+  /// In es, this message translates to:
+  /// **'Ajustes'**
   String get settings;
 
-  /// No description provided for @addTask.
+  /// No description provided for @summary.
   ///
-  /// In en, this message translates to:
-  /// **'Add Task'**
-  String get addTask;
+  /// In es, this message translates to:
+  /// **'Resumen'**
+  String get summary;
 
-  /// No description provided for @editTask.
+  /// No description provided for @calendar2025.
   ///
-  /// In en, this message translates to:
-  /// **'Edit Task'**
-  String get editTask;
+  /// In es, this message translates to:
+  /// **'Calendario 2025'**
+  String get calendar2025;
 
-  /// No description provided for @deleteTask.
+  /// No description provided for @markHoliday.
   ///
-  /// In en, this message translates to:
-  /// **'Delete Task'**
-  String get deleteTask;
+  /// In es, this message translates to:
+  /// **'Marcar como Festivo'**
+  String get markHoliday;
 
-  /// No description provided for @noTasksYet.
+  /// No description provided for @markVacation.
   ///
-  /// In en, this message translates to:
-  /// **'No tasks yet. Add one!'**
-  String get noTasksYet;
+  /// In es, this message translates to:
+  /// **'Marcar Vacac.'**
+  String get markVacation;
 
-  /// No description provided for @taskTitle.
+  /// No description provided for @markIntensiveWorkday.
   ///
-  /// In en, this message translates to:
-  /// **'Task Title'**
-  String get taskTitle;
+  /// In es, this message translates to:
+  /// **'Marcar J. Intensiva'**
+  String get markIntensiveWorkday;
 
-  /// No description provided for @enterTaskTitle.
+  /// No description provided for @clearSelection.
   ///
-  /// In en, this message translates to:
-  /// **'Enter task title'**
-  String get enterTaskTitle;
+  /// In es, this message translates to:
+  /// **'Limpiar'**
+  String get clearSelection;
 
-  /// No description provided for @add.
+  /// No description provided for @holiday.
   ///
-  /// In en, this message translates to:
-  /// **'ADD'**
-  String get add;
+  /// In es, this message translates to:
+  /// **'Festivo'**
+  String get holiday;
 
-  /// No description provided for @cancel.
+  /// No description provided for @vacation.
   ///
-  /// In en, this message translates to:
-  /// **'CANCEL'**
-  String get cancel;
+  /// In es, this message translates to:
+  /// **'Vacac.'**
+  String get vacation;
+
+  /// No description provided for @intensiveWorkday.
+  ///
+  /// In es, this message translates to:
+  /// **'J. Intensiva'**
+  String get intensiveWorkday;
+
+  /// No description provided for @totalHoursWorked.
+  ///
+  /// In es, this message translates to:
+  /// **'Total de horas trabajadas'**
+  String get totalHoursWorked;
+
+  /// No description provided for @annualHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas anuales'**
+  String get annualHours;
+
+  /// No description provided for @remainingHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas restantes'**
+  String get remainingHours;
 
   /// No description provided for @darkMode.
   ///
-  /// In en, this message translates to:
-  /// **'Dark Mode'**
+  /// In es, this message translates to:
+  /// **'Modo oscuro'**
   String get darkMode;
 
   /// No description provided for @chooseThemeColor.
   ///
-  /// In en, this message translates to:
-  /// **'Choose App Theme Color'**
+  /// In es, this message translates to:
+  /// **'Elegir color del tema'**
   String get chooseThemeColor;
 
   /// No description provided for @pickAColor.
   ///
-  /// In en, this message translates to:
-  /// **'Pick a color'**
+  /// In es, this message translates to:
+  /// **'Elige un color'**
   String get pickAColor;
 
   /// No description provided for @done.
   ///
-  /// In en, this message translates to:
-  /// **'Done'**
+  /// In es, this message translates to:
+  /// **'Aceptar'**
   String get done;
+
+  /// No description provided for @standardWorkday.
+  ///
+  /// In es, this message translates to:
+  /// **'Jornada laboral normal'**
+  String get standardWorkday;
+
+  /// No description provided for @intensiveWorkdayHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas de jornada intensiva'**
+  String get intensiveWorkdayHours;
+
+  /// No description provided for @annualHoursGoal.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas anuales de convenio'**
+  String get annualHoursGoal;
+
+  /// No description provided for @totalWorkingDays.
+  ///
+  /// In es, this message translates to:
+  /// **'Total de días trabajados'**
+  String get totalWorkingDays;
+
+  /// No description provided for @intensiveWorkdayPeriod.
+  ///
+  /// In es, this message translates to:
+  /// **'Periodo de jornada intensiva'**
+  String get intensiveWorkdayPeriod;
+
+  /// No description provided for @startDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de inicio'**
+  String get startDate;
+
+  /// No description provided for @endDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de fin'**
+  String get endDate;
+
+  /// No description provided for @selectDate.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar fecha'**
+  String get selectDate;
+
+  /// No description provided for @equivalentDays.
+  ///
+  /// In es, this message translates to:
+  /// **'Días equivalentes'**
+  String get equivalentDays;
+
+  /// No description provided for @year.
+  ///
+  /// In es, this message translates to:
+  /// **'Año'**
+  String get year;
 }
 
 class _AppLocalizationsDelegate

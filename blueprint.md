@@ -1,87 +1,64 @@
-# Blueprint: To-Do List App
+# Blueprint: Calendario Laboral App
 
-## Overview
+## Visión General
 
-A simple, yet powerful To-Do list application built with Flutter. It allows users to manage their tasks, view them on a calendar, and customize the app's theme.
+Esta aplicación es un "Calendario Laboral" dinámico y reutilizable, diseñado para que los empleados puedan registrar y hacer un seguimiento de sus jornadas laborales a lo largo de **múltiples años**. Permite a los usuarios marcar días específicos como festivos, vacaciones o de jornada intensiva, y proporciona un resumen automático de las horas trabajadas, las horas restantes según un objetivo anual y el total de días laborables para el año seleccionado.
 
-## Core Features
+La aplicación es altamente configurable, permitiendo a los usuarios ajustar las horas de cada tipo de jornada, el objetivo de horas anuales, los colores del tema y el período exacto de la jornada intensiva para una experiencia personalizada.
 
-- **Task Management:** Add, edit, delete, and mark tasks as complete.
-- **Data Persistence:** Tasks are saved locally on the device.
-- **Calendar View:** A calendar screen to visualize tasks by date.
-- **Customization:** Change the primary theme color and switch between light and dark modes.
-- **Internationalization (i18n):** Support for English and Spanish languages.
+## Características Implementadas
 
-## Project Structure
+- **Soporte Multi-Anual Dinámico:**
+    - **Selector de Año:** La pantalla del calendario incluye un menú desplegable que permite al usuario cambiar fácilmente el año que desea visualizar y gestionar (e.g., 2024, 2025, 2026...).
+    - **Datos Independientes por Año:** Las marcas en el calendario (festivos, vacaciones, etc.) se guardan de forma separada para cada año. Los datos de 2025 no interfieren con los de 2026.
+    - **Cálculos y Vistas Adaptativos:** Toda la aplicación, incluyendo el calendario, la pantalla de resumen y los selectores de fecha en los ajustes, reacciona al año seleccionado, mostrando siempre la información pertinente.
 
-```
-lib/
-|-- models/
-|   `-- task.dart
-|-- providers/
-|   |-- task_provider.dart
-|   `-- theme_provider.dart
-|-- screens/
-|   |-- calendar_screen.dart
-|   |-- home_page.dart
-|   `-- settings_screen.dart
-|-- l10n/
-|   |-- app_en.arb
-|   `-- app_es.arb
-`-- main.dart
-```
+- **Navegación por Pestañas:** Una barra de navegación inferior (`BottomNavigationBar`) permite cambiar fácilmente entre las tres secciones principales: Calendario, Resumen y Ajustes.
 
-## Feature Implementation Plan
+- **Calendario Interactivo:**
+    - Visualización del calendario completo del **año seleccionado**.
+    - Los usuarios pueden seleccionar un día o un rango de días.
+    - Menú contextual para marcar los días seleccionados como:
+        - **Festivo (`Holiday`):** No se trabaja.
+        - **Vacaciones (`Vacation`):** No se trabaja.
+        - **Jornada Intensiva (`Intensive Workday`):** Día con horario reducido.
+    - Opción para limpiar la marca de un día.
 
-### 1. Basic To-Do List (Completed)
+- **Resumen de Horas (por Año):**
+    - **Total de Horas Trabajadas:** Cálculo dinámico de todas las horas trabajadas en el año seleccionado.
+    - **Horas Anuales de Convenio:** Objetivo total de horas a trabajar, configurable por el usuario.
+    - **Horas Restantes:** Diferencia entre el objetivo anual y las horas ya trabajadas.
+    - **Total de Días Trabajados:** Conteo de los días laborables del año seleccionado, excluyendo fines de semana, festivos y vacaciones.
+    - **Conversión a Días:** Cuando las horas restantes son negativas (hay horas extra), la aplicación las convierte a **días de trabajo equivalentes** para una mejor visualización.
 
-- [x] Set up basic Flutter project structure.
-- [x] Create `Task` model.
-- [x] Implement `TaskProvider` for state management using `ChangeNotifier`.
-- [x] Build the main screen (`HomePage`) to display the list of tasks.
-- [x] Implement adding new tasks via a `FloatingActionButton` and `AlertDialog`.
-- [x] Implement toggling task completion status.
-- [x] Implement deleting tasks.
+- **Cálculo de Horas Inteligente:**
+    - Los días marcados como **Vacaciones** o **Festivo** se excluyen del cómputo de horas trabajadas.
+    - Los días se consideran de **jornada intensiva** por defecto si caen dentro del rango configurado por el usuario, aunque no los marque manualmente en el calendario.
 
-### 2. Data Persistence (Completed)
+- **Pantalla de Ajustes Avanzada:**
+    - **Tema:**
+        - Interruptor para activar/desactivar el **Modo Oscuro**.
+        - Selector de color para personalizar los marcadores de **Festivo**, **Vacaciones** y **Jornada Intensiva**.
+    - **Configuración de Jornada:**
+        - Campos de texto para definir las horas de la **jornada normal** e **intensiva**.
+        - Campo de texto para establecer el **objetivo de horas anuales**.
+    - **Período de Jornada Intensiva:**
+        - Selectores de fecha que se adaptan al año seleccionado para definir un **rango de inicio y fin** para el período de jornada intensiva.
 
-- [x] Add `shared_preferences` package.
-- [x] Add serialization methods (`toJson`, `fromJson`) to the `Task` model.
-- [x] Implement `saveTasks` and `loadTasks` in `TaskProvider`.
-- [x] Call `loadTasks` on provider initialization.
-- [x] Call `saveTasks` after any modification to the task list.
+- **Persistencia de Datos:**
+    - Todas las configuraciones y las marcas del calendario para cada año se guardan localmente en el dispositivo usando `shared_preferences`, por lo que los datos persisten entre sesiones.
 
-### 3. Calendar View (Completed)
+- **Localización (i18n):**
+    - La interfaz está disponible en **Inglés** y **Español**.
 
-- [x] Add `table_calendar` package.
-- [x] Add a `creationDate` to the `Task` model.
-- [x] Create `CalendarScreen` widget.
-- [x] Implement `TableCalendar` to display tasks.
-- [x] Add navigation to `CalendarScreen` from `HomePage`.
+## Arquitectura
 
-### 4. Theme Customization (Completed)
+- **Gestión de Estado:** La aplicación utiliza el paquete `provider` para una gestión de estado reactiva y desacoplada.
+    - `SettingsProvider`: Gestiona todas las configuraciones del usuario, incluyendo el **año seleccionado**.
+    - `CalendarProvider`: Gestiona el estado del calendario y realiza todos los cálculos para la pantalla de resumen, reaccionando a los cambios en el `SettingsProvider` (como el cambio de año).
+    - `ThemeProvider` y `ColorProvider`: Gestionan el tema y los colores.
+- **Persistencia:** `shared_preferences` para el almacenamiento de datos del usuario, usando claves dinámicas para separar los datos por año (ej: `calendar_data_2026`).
 
-- [x] Add `provider` and `flutter_colorpicker` packages.
-- [x] Create `ThemeProvider` to manage app theme (primary color, light/dark mode).
-- [x] Create `SettingsScreen` widget.
-- [x] Add a color picker to `SettingsScreen` to change the primary color.
-- [x] Add a switch to toggle between light and dark mode.
-- [x] Use `MultiProvider` to provide both `TaskProvider` and `ThemeProvider`.
-- [x] Apply the dynamic theme to `MaterialApp`.
+## Plan Actual
 
-### 5. Code Refactoring & UI Polish (Completed)
-
-- [x] Reorganize project structure into `models`, `providers`, and `screens` folders.
-- [x] Implement a full Material 3 `ThemeData` using `ColorScheme.fromSeed` and `google_fonts`.
-- [x] Use `Card` widgets for a cleaner task list UI.
-- [x] Add a placeholder message for when the task list is empty.
-
-### 6. Internationalization (i18n) (Current)
-
-- [ ] Add `flutter_localizations` to `pubspec.yaml`.
-- [ ] Create `l10n.yaml` configuration file.
-- [ ] Create `.arb` translation files for English and Spanish.
-- [ ] Configure `MaterialApp` with `localizationsDelegates` and `supportedLocales`.
-- [ ] Run `flutter gen-l10n` to generate localization code.
-- [ ] Replace hardcoded UI strings with generated localization keys.
-
+La última gran actualización fue la refactorización completa de la aplicación para que dejara de estar limitada al año 2025. Se ha introducido un selector de año y se ha modificado toda la lógica de la aplicación para que sea dinámica y reutilizable año tras año, guardando los datos de cada período de forma independiente.
