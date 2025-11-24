@@ -12,7 +12,6 @@ class CalendarProvider with ChangeNotifier {
 
   CalendarProvider(this._settingsProvider) {
     _settingsProvider.addListener(() {
-      // When year changes, we need to reload the data for the new year
       loadData();
       notifyListeners();
     });
@@ -76,7 +75,7 @@ class CalendarProvider with ChangeNotifier {
     final year = _settingsProvider.selectedYear;
     final String key = 'calendar_data_$year';
     final data = prefs.getString(key);
-    _dayTypes.clear(); // Clear old data before loading new year's data
+    _dayTypes.clear();
     if (data != null) {
       final Map<String, dynamic> decodedData = json.decode(data);
       _dayTypes = decodedData.map((key, value) {
@@ -92,6 +91,14 @@ class CalendarProvider with ChangeNotifier {
     final startDate = DateTime(year, 1, 1);
     final endDate = DateTime(year, 12, 31);
 
+    // First, get the list of all holidays for the year
+    final List<DateTime> holidays = [];
+    _dayTypes.forEach((date, dayType) {
+      if (dayType == DayType.holiday) {
+        holidays.add(date);
+      }
+    });
+
     for (var i = 0; i <= endDate.difference(startDate).inDays; i++) {
       final date = startDate.add(Duration(days: i));
 
@@ -102,7 +109,8 @@ class CalendarProvider with ChangeNotifier {
       final dayType = getDayType(date);
 
       if (dayType != DayType.holiday && dayType != DayType.vacation) {
-        final isIntensive = _settingsProvider.isIntensiveWorkday(date);
+        // Pass the holidays list to the checking function
+        final isIntensive = _settingsProvider.isIntensiveWorkday(date, holidays);
         if (dayType == DayType.intensive || isIntensive) {
           total += _settingsProvider.intensiveWorkdayHours;
         } else {
