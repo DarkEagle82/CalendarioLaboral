@@ -94,4 +94,23 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get year => 'Año';
+
+  @override
+  String get workdayHours => 'Horas de la jornada';
+
+  @override
+  String get delete => 'Eliminar';
+
+  @override
+  String get confirmDeletion => 'Confirmar eliminación';
+
+  @override
+  String get areYouSureYouWantToDeleteThisRule =>
+      '¿Estás seguro de que quieres eliminar esta regla?';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get standardWorkdayHours => 'Horas de la jornada normal';
 }

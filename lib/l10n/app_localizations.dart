@@ -271,6 +271,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Año'**
   String get year;
+
+  /// No description provided for @workdayHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas de la jornada'**
+  String get workdayHours;
+
+  /// No description provided for @delete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get delete;
+
+  /// No description provided for @confirmDeletion.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar eliminación'**
+  String get confirmDeletion;
+
+  /// No description provided for @areYouSureYouWantToDeleteThisRule.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que quieres eliminar esta regla?'**
+  String get areYouSureYouWantToDeleteThisRule;
+
+  /// No description provided for @cancel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get cancel;
+
+  /// No description provided for @standardWorkdayHours.
+  ///
+  /// In es, this message translates to:
+  /// **'Horas de la jornada normal'**
+  String get standardWorkdayHours;
 }
 
 class _AppLocalizationsDelegate

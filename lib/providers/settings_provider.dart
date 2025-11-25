@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mi_calendario/models/intensive_period.dart';
+import 'package:myapp/models/intensive_period.dart';
 
 class SettingsProvider with ChangeNotifier {
   int _selectedYear = DateTime.now().year;

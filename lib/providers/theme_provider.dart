@@ -16,6 +16,7 @@ class ThemeProvider with ChangeNotifier {
 
   void _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
+    // ignore: deprecated_member_use
     _primaryColor = Color(prefs.getInt('primaryColor') ?? Colors.deepPurple.value);
     final isDark = prefs.getBool('isDarkMode') ?? false;
     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
@@ -24,6 +25,7 @@ class ThemeProvider with ChangeNotifier {
 
   void _saveTheme() async {
     final prefs = await SharedPreferences.getInstance();
+    // ignore: deprecated_member_use
     prefs.setInt('primaryColor', _primaryColor.value);
     prefs.setBool('isDarkMode', isDarkMode);
   }

@@ -94,4 +94,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get year => 'Year';
+
+  @override
+  String get workdayHours => 'Workday Hours';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get confirmDeletion => 'Confirm Deletion';
+
+  @override
+  String get areYouSureYouWantToDeleteThisRule =>
+      'Are you sure you want to delete this rule?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get standardWorkdayHours => 'Standard Workday Hours';
 }

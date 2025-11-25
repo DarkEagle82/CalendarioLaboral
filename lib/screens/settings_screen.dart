@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:mi_calendario/l10n/app_localizations.dart';
-import 'package:mi_calendario/models/intensive_period.dart';
-import 'package:mi_calendario/providers/color_provider.dart';
-import 'package:mi_calendario/providers/settings_provider.dart';
+import 'package:myapp/l10n/app_localizations.dart';
+import 'package:myapp/models/intensive_period.dart';
+import 'package:myapp/providers/color_provider.dart';
+import 'package:myapp/providers/settings_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -68,8 +68,8 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddRuleTypeDialog(context, settingsProvider, l10n),
-        child: const Icon(Icons.add),
         tooltip: "Añadir Regla",
+        child: const Icon(Icons.add),
       ),
     );
   }

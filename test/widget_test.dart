@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:myapp/main.dart';
 import 'package:myapp/providers/calendar_provider.dart';
+import 'package:myapp/providers/settings_provider.dart';
 import 'package:myapp/providers/theme_provider.dart';
 import 'package:myapp/screens/calendar_screen.dart';
 import 'package:myapp/screens/settings_screen.dart';
@@ -18,7 +19,8 @@ void main() async {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => ThemeProvider()),
-          ChangeNotifierProvider(create: (_) => CalendarProvider()),
+          ChangeNotifierProvider(create: (_) => SettingsProvider()),
+          ChangeNotifierProvider(create: (context) => CalendarProvider(context.read<SettingsProvider>())),
         ],
         child: const MyApp(),
       ),

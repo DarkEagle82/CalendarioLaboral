@@ -27,5 +27,11 @@
   "endDate": "Fecha de fin",
   "selectDate": "Seleccionar fecha",
   "equivalentDays": "Días equivalentes",
-  "year": "Año"
+  "year": "Año",
+  "workdayHours": "Horas de la jornada",
+  "delete": "Eliminar",
+  "confirmDeletion": "Confirmar eliminación",
+  "areYouSureYouWantToDeleteThisRule": "¿Estás seguro de que quieres eliminar esta regla?",
+  "cancel": "Cancelar",
+  "standardWorkdayHours": "Horas de la jornada normal"
 }

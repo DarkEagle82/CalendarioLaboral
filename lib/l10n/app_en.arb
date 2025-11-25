@@ -27,5 +27,11 @@
   "endDate": "End Date",
   "selectDate": "Select date",
   "equivalentDays": "Equivalent Days",
-  "year": "Year"
+  "year": "Year",
+  "workdayHours": "Workday Hours",
+  "delete": "Delete",
+  "confirmDeletion": "Confirm Deletion",
+  "areYouSureYouWantToDeleteThisRule": "Are you sure you want to delete this rule?",
+  "cancel": "Cancel",
+  "standardWorkdayHours": "Standard Workday Hours"
 }
