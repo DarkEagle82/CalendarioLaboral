@@ -1,13 +1,25 @@
-enum DayType { work, holiday, vacation, weekend }
+enum DayType { work, holiday, vacation, weekend, none }
 
 class WorkDay {
-  final DateTime date;
-  final DayType dayType;
-  final Duration duration;
+  final int totalMinutes;
 
-  WorkDay({
-    required this.date,
-    this.dayType = DayType.work,
-    this.duration = const Duration(hours: 7, minutes: 30),
-  });
+  WorkDay({required this.totalMinutes});
+
+  int get hours => totalMinutes ~/ 60;
+  int get minutes => totalMinutes % 60;
+
+  Map<String, dynamic> toJson() => {
+        'totalMinutes': totalMinutes,
+      };
+
+  factory WorkDay.fromJson(Map<String, dynamic> json) {
+    return WorkDay(
+      totalMinutes: json['totalMinutes'],
+    );
+  }
+
+  @override
+  String toString() {
+    return '$hours:${minutes.toString().padLeft(2, '0')}';
+  }
 }

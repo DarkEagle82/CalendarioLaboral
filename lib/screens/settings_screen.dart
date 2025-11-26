@@ -25,9 +25,9 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
   void initState() {
     super.initState();
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
-    _standardWorkdayController = TextEditingController(text: settingsProvider.standardWorkdayHours.toString());
-    _intensiveWorkdayController = TextEditingController(text: settingsProvider.intensiveWorkdayHours.toString());
-    _annualHoursController = TextEditingController(text: settingsProvider.annualHoursGoal.toString());
+    _standardWorkdayController = TextEditingController(text: settingsProvider.regularWorkDay.toString());
+    _intensiveWorkdayController = TextEditingController(text: settingsProvider.intensiveWorkDay.toString());
+    _annualHoursController = TextEditingController(text: settingsProvider.annualHours.toString());
   }
 
   @override
@@ -54,13 +54,13 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
             children: [
               Text(l10n.settings, style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 16),
-              Text(l10n.chooseThemeColor, style: Theme.of(context).textTheme.titleLarge),
+              Text(l10n.theme, style: Theme.of(context).textTheme.titleLarge),
               _buildColorSettings(l10n, colorProvider),
               const SizedBox(height: 24),
               Text(l10n.workdayHours, style: Theme.of(context).textTheme.titleLarge),
               _buildHoursSettings(l10n, settingsProvider),
               const SizedBox(height: 24),
-              Text("Reglas de Jornada Intensiva", style: Theme.of(context).textTheme.titleLarge),
+              Text(l10n.intensivePeriods, style: Theme.of(context).textTheme.titleLarge),
               _buildIntensiveRulesList(context, settingsProvider, l10n),
             ],
           ),
@@ -68,7 +68,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddRuleTypeDialog(context, settingsProvider, l10n),
-        tooltip: "Añadir Regla",
+        tooltip: l10n.addRule,
         child: const Icon(Icons.add),
       ),
     );
@@ -76,9 +76,9 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
 
   Widget _buildIntensiveRulesList(BuildContext context, SettingsProvider settingsProvider, AppLocalizations l10n) {
     if (settingsProvider.intensiveRules.isEmpty) {
-      return const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24.0),
-        child: Center(child: Text("No hay reglas definidas. Pulsa '+' para añadir una.")),
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24.0),
+        child: Center(child: Text(l10n.noRulesDefined)),
       );
     }
 
@@ -107,13 +107,13 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Seleccionar tipo de regla"),
+        title: Text(l10n.ruleType),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(Icons.date_range),
-              title: const Text("Rango de Fechas"),
+              title: Text(l10n.dateRange),
               onTap: () {
                 Navigator.of(context).pop();
                 _showAddDateRangeRuleDialog(context, settingsProvider, l10n);
@@ -121,7 +121,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
             ),
             ListTile(
               leading: const Icon(Icons.view_week),
-              title: const Text("Día semanal en un rango"),
+              title: Text(l10n.weeklyOnRange),
               onTap: () {
                  Navigator.of(context).pop();
                 _showAddWeeklyRuleDialog(context, settingsProvider, l10n);
@@ -130,7 +130,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
              if (!settingsProvider.intensiveRules.any((r) => r.type == IntensiveRuleType.holidayEve))
               ListTile(
                 leading: const Icon(Icons.celebration),
-                title: const Text("Víspera de festivo"),
+                title: Text(l10n.holidayEve),
                 onTap: () {
                   Navigator.of(context).pop();
                   settingsProvider.addIntensiveRule(HolidayEveRule());
@@ -177,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
-          title: const Text('Selecciona el día de la semana'),
+          title: Text(l10n.selectWeekDay),
           content: DropdownButton<int>(
             value: selectedWeekday,
             onChanged: (int? newValue) {
@@ -188,7 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
             items: List.generate(7, (index) => 
               DropdownMenuItem<int>(
                 value: index + 1,
-                child: Text(['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'][index]),
+                child: Text([l10n.monday, l10n.tuesday, l10n.wednesday, l10n.thursday, l10n.friday, l10n.saturday, l10n.sunday][index]),
               )
             ),
           ),
@@ -251,7 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
       children: [
         TextField(
           controller: _standardWorkdayController,
-          decoration: InputDecoration(labelText: l10n.standardWorkdayHours),
+          decoration: InputDecoration(labelText: l10n.standardWorkday),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) {
             try { settingsProvider.setStandardWorkdayHours(double.parse(value)); } catch(e) {/* ignore */}
@@ -260,7 +260,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
         const SizedBox(height: 16),
         TextField(
           controller: _intensiveWorkdayController,
-          decoration: InputDecoration(labelText: l10n.intensiveWorkdayHours),
+          decoration: InputDecoration(labelText: l10n.intensiveWorkday),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) {
             try { settingsProvider.setIntensiveWorkdayHours(double.parse(value)); } catch(e) {/* ignore */}
@@ -269,7 +269,7 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
         const SizedBox(height: 16),
         TextField(
           controller: _annualHoursController,
-          decoration: InputDecoration(labelText: l10n.annualHoursGoal),
+          decoration: InputDecoration(labelText: l10n.annualHours),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) {
             try { settingsProvider.setAnnualHoursGoal(double.parse(value)); } catch(e) {/* ignore */}
@@ -283,9 +283,9 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text(l10n.pickAColor),
+        title: Text(l10n.selectColor),
         content: SingleChildScrollView(child: ColorPicker(pickerColor: initialColor, onColorChanged: onColorChanged)),
-        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.done))],
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.confirm))],
       ),
     );
   }

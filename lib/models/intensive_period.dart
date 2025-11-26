@@ -22,6 +22,20 @@ abstract class IntensiveRule {
 
   // A descriptive title for the UI
   String get description;
+
+  // Factory constructor to create the correct rule from JSON
+  factory IntensiveRule.fromJson(Map<String, dynamic> json) {
+    switch (json['type']) {
+      case 'IntensiveRuleType.dateRange':
+        return DateRangeRule.fromJson(json);
+      case 'IntensiveRuleType.weeklyOnRange':
+        return WeeklyOnRangeRule.fromJson(json);
+      case 'IntensiveRuleType.holidayEve':
+        return HolidayEveRule.fromJson(json);
+      default:
+        throw Exception('Unknown IntensiveRuleType');
+    }
+  }
 }
 
 // Rule for a specific date range

@@ -20,7 +20,7 @@ class CalendarProvider with ChangeNotifier {
   }
 
   void _onSettingsChanged() {
-    _loadEntries();
+    notifyListeners();
   }
 
   void setFocusedDay(DateTime day) {
@@ -41,12 +41,12 @@ class CalendarProvider with ChangeNotifier {
   }
 
   void markDay(DateTime day, DayType dayType) {
-    addEntry(day, DayEntry(dayType: dayType));
+    addEntry(day, DayEntry(date: day, dayType: dayType));
   }
 
   void markDaysInRange(DateTime start, DateTime end, DayType dayType) {
     for (var day = start; day.isBefore(end.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
-      addEntry(day, DayEntry(dayType: dayType));
+      addEntry(day, DayEntry(date: day, dayType: dayType));
     }
   }
 
@@ -60,10 +60,8 @@ class CalendarProvider with ChangeNotifier {
   }
 
   WorkDay getWorkDay(DateTime day) {
-    final intensivePeriods = _settingsProvider.intensivePeriods;
-    bool isIntensive = intensivePeriods.any((p) =>
-        (day.isAfter(p.start) || day.isAtSameMomentAs(p.start)) &&
-        (day.isBefore(p.end) || day.isAtSameMomentAs(p.end)));
+    final intensiveRules = _settingsProvider.intensiveRules;
+    bool isIntensive = intensiveRules.any((rule) => rule.isIntensive(day, []));
 
     return isIntensive
         ? _settingsProvider.intensiveWorkDay
@@ -81,7 +79,7 @@ class CalendarProvider with ChangeNotifier {
   double get remainingHours => annualHours - totalHoursWorked;
 
   double get equivalentDays {
-    final regularDayHours = _settingsProvider.regularWorkDay.inHours;
+    final regularDayHours = _settingsProvider.regularWorkDay.hours;
     return regularDayHours > 0 ? remainingHours / regularDayHours : 0;
   }
 
