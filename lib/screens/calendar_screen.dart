@@ -4,6 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../l10n/app_localizations.dart';
 import '../models/day_entry.dart';
+import '../models/work_day.dart';
 import '../providers/calendar_provider.dart';
 
 class CalendarScreen extends StatefulWidget {
