@@ -9,108 +9,169 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get appTitle => 'Calendario Laboral';
-
-  @override
   String get calendar => 'Calendario';
 
   @override
-  String get settings => 'Ajustes';
+  String get settings => 'Configuración';
 
   @override
   String get summary => 'Resumen';
 
   @override
-  String get calendar2025 => 'Calendario 2025';
+  String get home => 'Inicio';
 
   @override
-  String get markHoliday => 'Marcar como Festivo';
+  String get standardWorkday => 'Jornada Estándar';
 
   @override
-  String get markVacation => 'Marcar Vacac.';
+  String get intensiveWorkday => 'Jornada Intensiva';
 
   @override
-  String get markIntensiveWorkday => 'Marcar J. Intensiva';
+  String get annualHours => 'Horas Anuales';
 
   @override
-  String get clearSelection => 'Limpiar';
+  String get save => 'Guardar';
 
   @override
-  String get holiday => 'Festivo';
+  String get intensivePeriods => 'Períodos Intensivos';
 
   @override
-  String get vacation => 'Vacac.';
+  String get addIntensivePeriod => 'Añadir Período Intensivo';
 
   @override
-  String get intensiveWorkday => 'J. Intensiva';
+  String get selectDate => 'Seleccionar Fecha';
 
   @override
-  String get totalHoursWorked => 'Total de horas trabajadas';
+  String get selectWeekDay => 'Seleccionar Día de la Semana';
 
   @override
-  String get annualHours => 'Horas anuales';
+  String get hours => 'Horas';
 
   @override
-  String get remainingHours => 'Horas restantes';
+  String get minutes => 'Minutos';
 
   @override
-  String get darkMode => 'Modo oscuro';
+  String get selectColor => 'Seleccionar Color';
 
   @override
-  String get chooseThemeColor => 'Elegir color del tema';
+  String get english => 'Inglés';
 
   @override
-  String get pickAColor => 'Elige un color';
+  String get spanish => 'Español';
 
   @override
-  String get done => 'Aceptar';
+  String get system => 'Sistema';
 
   @override
-  String get standardWorkday => 'Jornada laboral normal';
+  String get language => 'Idioma';
 
   @override
-  String get intensiveWorkdayHours => 'Horas de jornada intensiva';
+  String get theme => 'Tema';
 
   @override
-  String get annualHoursGoal => 'Horas anuales de convenio';
+  String get light => 'Claro';
 
   @override
-  String get totalWorkingDays => 'Total de días trabajados';
+  String get dark => 'Oscuro';
 
   @override
-  String get intensiveWorkdayPeriod => 'Periodo de jornada intensiva';
+  String get appName => 'Calendario Laboral';
 
   @override
-  String get startDate => 'Fecha de inicio';
+  String get addRule => 'Añadir Regla';
 
   @override
-  String get endDate => 'Fecha de fin';
+  String get ruleType => 'Tipo de Regla';
 
   @override
-  String get selectDate => 'Seleccionar fecha';
+  String get dateRange => 'Rango de Fechas';
 
   @override
-  String get equivalentDays => 'Días equivalentes';
+  String get weeklyOnRange => 'Semanal en Rango';
 
   @override
-  String get year => 'Año';
+  String get holidayEve => 'Víspera de Festivo';
 
   @override
-  String get workdayHours => 'Horas de la jornada';
+  String get startDate => 'Fecha de Inicio';
+
+  @override
+  String get endDate => 'Fecha de Fin';
+
+  @override
+  String get weekday => 'Día de la Semana';
+
+  @override
+  String get monday => 'Lunes';
+
+  @override
+  String get tuesday => 'Martes';
+
+  @override
+  String get wednesday => 'Miércoles';
+
+  @override
+  String get thursday => 'Jueves';
+
+  @override
+  String get friday => 'Viernes';
+
+  @override
+  String get saturday => 'Sábado';
+
+  @override
+  String get sunday => 'Domingo';
+
+  @override
+  String get confirm => 'Confirmar';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get totalHoursWorked => 'Horas Totales Trabajadas';
+
+  @override
+  String get remainingHours => 'Horas Restantes';
+
+  @override
+  String get equivalentDays => 'Días Equivalentes';
+
+  @override
+  String get totalWorkingDays => 'Días Totales Trabajados';
+
+  @override
+  String get clearSelection => 'Limpiar Selección';
+
+  @override
+  String get markAsHoliday => 'Marcar como Festivo';
+
+  @override
+  String get markAsVacation => 'Marcar como Vacaciones';
+
+  @override
+  String get noRulesDefined =>
+      'No hay reglas definidas. Pulsa \'+\' para añadir una.';
 
   @override
   String get delete => 'Eliminar';
 
   @override
-  String get confirmDeletion => 'Confirmar eliminación';
+  String get confirmDeletion => 'Confirmar Eliminación';
 
   @override
   String get areYouSureYouWantToDeleteThisRule =>
       '¿Estás seguro de que quieres eliminar esta regla?';
 
   @override
-  String get cancel => 'Cancelar';
+  String get workdayHours => 'Horas de la Jornada';
 
   @override
-  String get standardWorkdayHours => 'Horas de la jornada normal';
+  String get chooseThemeColor => 'Elegir Color del Tema';
+
+  @override
+  String get holiday => 'Festivo';
+
+  @override
+  String get vacation => 'Vacaciones';
 }
