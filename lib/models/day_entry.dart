@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/models/work_day.dart';
+import 'package:calendario_laboral/models/work_day.dart';
 
 class DayEntry {
   final DateTime date;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:myapp/l10n/app_localizations.dart';
-import 'package:myapp/providers/calendar_provider.dart';
+import 'package:calendario_laboral/l10n/app_localizations.dart';
+import 'package:calendario_laboral/providers/calendar_provider.dart';
 
 class SummaryScreen extends StatefulWidget {
   const SummaryScreen({super.key});
