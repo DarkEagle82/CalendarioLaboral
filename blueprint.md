@@ -8,6 +8,9 @@ La aplicación es altamente configurable, permitiendo a los usuarios ajustar las
 
 ## Características Implementadas
 
+- **Icono de Aplicación Personalizado:**
+    - Se ha añadido un icono de aplicación único y profesional, reemplazando el icono por defecto de Flutter. El icono se genera automáticamente para las densidades de pantalla de Android.
+
 - **Soporte Multi-Anual Dinámico:**
     - **Selector de Año:** La pantalla del calendario incluye un menú desplegable que permite al usuario cambiar fácilmente el año que desea visualizar y gestionar.
     - **Datos Independientes por Año:** Las marcas en el calendario (festivos, vacaciones) se guardan de forma separada para cada año.
@@ -64,4 +67,4 @@ La aplicación es altamente configurable, permitiendo a los usuarios ajustar las
 
 ## Plan Actual
 
-La última gran actualización ha sido una **refactorización completa del sistema de jornada intensiva**. Se ha reemplazado un sistema rígido de fecha de inicio/fin por un **sistema dinámico y flexible basado en reglas**. Esto ha implicado la creación de nuevos modelos de datos, la actualización de los proveedores de estado y una reconstrucción total de la sección correspondiente en la pantalla de ajustes para permitir al usuario gestionar sus propias reglas.
+El último cambio ha sido la **implementación de un icono de aplicación personalizado**. Esto mejora la identidad visual de la aplicación y la hace fácilmente reconocible en el dispositivo del usuario.

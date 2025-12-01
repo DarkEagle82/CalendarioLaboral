@@ -24,6 +24,7 @@ Esta aplicación te permite tener un control total sobre tu calendario laboral c
     -   **Paleta de Colores:** Personaliza los colores que se usan en el calendario para los días festivos, las vacaciones y la jornada intensiva.
 -   **💾 Persistencia de Datos:** Toda tu configuración y los días que marques se guardan localmente en tu dispositivo para que no pierdas nada.
 -   **🌐 Soporte Multilenguaje:** Disponible en Español e Inglés.
+-   **📱 Icono de Aplicación Personalizado:** Un icono único y reconocible para la aplicación.
 
 ## 🚀 Cómo Empezar
 
