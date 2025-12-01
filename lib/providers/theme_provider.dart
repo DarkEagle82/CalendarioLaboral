@@ -10,13 +10,15 @@ class ThemeProvider with ChangeNotifier {
 
   bool get isDarkMode => _themeMode == ThemeMode.dark;
 
+  ThemeData get lightTheme => _buildTheme(Brightness.light);
+  ThemeData get darkTheme => _buildTheme(Brightness.dark);
+
   ThemeProvider() {
     _loadTheme();
   }
 
   void _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    // ignore: deprecated_member_use
     _primaryColor = Color(prefs.getInt('primaryColor') ?? Colors.deepPurple.value);
     final isDark = prefs.getBool('isDarkMode') ?? false;
     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
@@ -25,13 +27,12 @@ class ThemeProvider with ChangeNotifier {
 
   void _saveTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    // ignore: deprecated_member_use
     prefs.setInt('primaryColor', _primaryColor.value);
-    prefs.setBool('isDarkMode', isDarkMode);
+    prefs.setBool('isDarkMode', _themeMode == ThemeMode.dark);
   }
 
   void toggleTheme() {
-    _themeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
+    _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     _saveTheme();
     notifyListeners();
   }
@@ -42,17 +43,17 @@ class ThemeProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  ThemeData getTheme() {
+  ThemeData _buildTheme(Brightness brightness) {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: _primaryColor,
-      brightness: isDarkMode ? Brightness.dark : Brightness.light,
+      brightness: brightness,
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
       primaryColor: _primaryColor,
-      brightness: isDarkMode ? Brightness.dark : Brightness.light,
+      brightness: brightness,
     );
   }
 }

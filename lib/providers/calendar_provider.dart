@@ -7,20 +7,30 @@ import '../models/work_day.dart';
 import 'settings_provider.dart';
 
 class CalendarProvider with ChangeNotifier {
-  final SettingsProvider _settingsProvider;
+  late SettingsProvider _settingsProvider;
   Map<DateTime, DayEntry> _entries = {};
   DateTime _focusedDay = DateTime.now();
+  int? _lastLoadedYear;
 
   Map<DateTime, DayEntry> get entries => _entries;
   DateTime get focusedDay => _focusedDay;
 
-  CalendarProvider(this._settingsProvider) {
-    _settingsProvider.addListener(_onSettingsChanged);
+  CalendarProvider(SettingsProvider settingsProvider) {
+    _settingsProvider = settingsProvider;
+    _lastLoadedYear = _settingsProvider.selectedYear;
     _loadEntries();
   }
 
-  void _onSettingsChanged() {
-    notifyListeners();
+  void update(SettingsProvider newSettings) {
+    final oldYear = _settingsProvider.selectedYear;
+    _settingsProvider = newSettings;
+
+    if (oldYear != newSettings.selectedYear) {
+      _lastLoadedYear = newSettings.selectedYear;
+      _loadEntries(); // This will load data for the new year and notify listeners
+    } else {
+      notifyListeners(); // For other settings changes like work hours, colors, etc.
+    }
   }
 
   void setFocusedDay(DateTime day) {
@@ -29,49 +39,102 @@ class CalendarProvider with ChangeNotifier {
   }
 
   void addEntry(DateTime day, DayEntry entry) {
-    _entries[day] = entry;
+    final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
+    _entries[dateWithoutTime] = entry;
     _saveEntries();
     notifyListeners();
   }
 
   void removeEntry(DateTime day) {
-    _entries.remove(day);
+    final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
+    _entries.remove(dateWithoutTime);
     _saveEntries();
     notifyListeners();
   }
 
   void markDay(DateTime day, DayType dayType) {
-    addEntry(day, DayEntry(date: day, dayType: dayType));
+    final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
+    addEntry(dateWithoutTime, DayEntry(date: dateWithoutTime, dayType: dayType));
   }
 
   void markDaysInRange(DateTime start, DateTime end, DayType dayType) {
     for (var day = start; day.isBefore(end.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
-      addEntry(day, DayEntry(date: day, dayType: dayType));
+      final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
+      if (dateWithoutTime.weekday != DateTime.saturday && dateWithoutTime.weekday != DateTime.sunday) {
+        addEntry(dateWithoutTime, DayEntry(date: dateWithoutTime, dayType: dayType));
+      }
     }
+    notifyListeners();
   }
 
   void clearDay(DateTime day) {
     removeEntry(day);
   }
 
+  void clearDaysInRange(DateTime start, DateTime end) {
+    for (var day = start; day.isBefore(end.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
+      removeEntry(day);
+    }
+    notifyListeners();
+  }
+
   DayType getDayType(DateTime day) {
-    final entry = _entries[day];
-    return entry?.dayType ?? DayType.none;
+    final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
+    return _entries[dateWithoutTime]?.dayType ?? DayType.none;
   }
 
   WorkDay getWorkDay(DateTime day) {
     final intensiveRules = _settingsProvider.intensiveRules;
     bool isIntensive = intensiveRules.any((rule) => rule.isIntensive(day, []));
 
-    return isIntensive
-        ? _settingsProvider.intensiveWorkDay
-        : _settingsProvider.regularWorkDay;
+    return isIntensive ? _settingsProvider.intensiveWorkDay : _settingsProvider.regularWorkDay;
   }
 
   double get totalHoursWorked {
-    return _entries.values
-        .where((entry) => entry.dayType == DayType.work && entry.duration != null)
-        .fold(0.0, (sum, entry) => sum + entry.duration!.inMinutes / 60);
+    double totalHours = 0.0;
+    final year = _settingsProvider.selectedYear;
+    final startDate = DateTime.utc(year, 1, 1);
+    final endDate = DateTime.utc(year, 12, 31);
+
+    for (var day = startDate; day.isBefore(endDate.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
+      if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
+        continue;
+      }
+
+      final entry = _entries[day];
+
+      if (entry != null) {
+        if (entry.dayType == DayType.holiday || entry.dayType == DayType.vacation) {
+          totalHours += getWorkDay(day).hours;
+        } else if (entry.dayType == DayType.work && entry.duration != null) {
+          totalHours += entry.duration!.inMinutes / 60;
+        } else {
+          totalHours += getWorkDay(day).hours;
+        }
+      } else {
+        totalHours += getWorkDay(day).hours;
+      }
+    }
+    return totalHours;
+  }
+
+  int get totalWorkingDays {
+    int workingDays = 0;
+    final year = _settingsProvider.selectedYear;
+    final startDate = DateTime.utc(year, 1, 1);
+    final endDate = DateTime.utc(year, 12, 31);
+
+    for (var day = startDate; day.isBefore(endDate.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
+      if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
+        continue;
+      }
+      final entry = _entries[day];
+      if (entry != null && (entry.dayType == DayType.holiday || entry.dayType == DayType.vacation)) {
+        continue;
+      }
+      workingDays++;
+    }
+    return workingDays;
   }
 
   double get annualHours => _settingsProvider.annualHours;
@@ -80,35 +143,30 @@ class CalendarProvider with ChangeNotifier {
 
   double get equivalentDays {
     final regularDayHours = _settingsProvider.regularWorkDay.hours;
-    return regularDayHours > 0 ? remainingHours / regularDayHours : 0;
-  }
-
-  int get totalWorkingDays {
-    return _entries.values.where((entry) => entry.dayType == DayType.work).length;
+    if (remainingHours >= 0 || regularDayHours <= 0) {
+      return 0;
+    }
+    return -remainingHours / regularDayHours;
   }
 
   Future<void> _saveEntries() async {
     final prefs = await SharedPreferences.getInstance();
-    final encodedEntries = _entries.map((key, value) =>
-        MapEntry(key.toIso8601String(), json.encode(value.toJson())));
-    await prefs.setString('calendar_entries', json.encode(encodedEntries));
+    final year = _settingsProvider.selectedYear;
+    final encodedEntries = _entries.map((key, value) => MapEntry(key.toIso8601String(), json.encode(value.toJson())));
+    await prefs.setString('calendar_entries_$year', json.encode(encodedEntries));
   }
 
   Future<void> _loadEntries() async {
     final prefs = await SharedPreferences.getInstance();
-    final storedEntries = prefs.getString('calendar_entries');
+    final year = _settingsProvider.selectedYear;
+    final storedEntries = prefs.getString('calendar_entries_$year');
 
     if (storedEntries != null) {
       final decodedEntries = json.decode(storedEntries) as Map<String, dynamic>;
-      _entries = decodedEntries.map((key, value) =>
-          MapEntry(DateTime.parse(key), DayEntry.fromJson(json.decode(value))));
+      _entries = decodedEntries.map((key, value) => MapEntry(DateTime.parse(key), DayEntry.fromJson(json.decode(value))));
+    } else {
+      _entries = {};
     }
     notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _settingsProvider.removeListener(_onSettingsChanged);
-    super.dispose();
   }
 }

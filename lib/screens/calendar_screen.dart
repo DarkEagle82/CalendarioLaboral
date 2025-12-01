@@ -6,6 +6,7 @@ import '../l10n/app_localizations.dart';
 import '../models/day_entry.dart';
 import '../models/work_day.dart';
 import '../providers/calendar_provider.dart';
+import '../providers/color_provider.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -44,14 +45,25 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: Column(
         children: [
           TableCalendar(
+            locale: Localizations.localeOf(context).toString(),
             firstDay: DateTime.utc(2020, 1, 1),
             lastDay: DateTime.utc(2030, 12, 31),
             focusedDay: calendarProvider.focusedDay,
             calendarFormat: _calendarFormat,
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+            ),
             rangeSelectionMode: _rangeSelectionMode,
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
             rangeStartDay: _rangeStart,
             rangeEndDay: _rangeEnd,
+            startingDayOfWeek: StartingDayOfWeek.monday,
+            availableCalendarFormats: const {
+              CalendarFormat.month: 'Month',
+            },
+            enabledDayPredicate: (day) {
+              return day.weekday != DateTime.saturday && day.weekday != DateTime.sunday;
+            },
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_selectedDay, selectedDay)) {
                 setState(() {
@@ -82,7 +94,26 @@ class _CalendarScreenState extends State<CalendarScreen> {
             onPageChanged: (focusedDay) {
               calendarProvider.setFocusedDay(focusedDay);
             },
+            calendarStyle: CalendarStyle(
+              weekendTextStyle: TextStyle(color: Colors.grey[500]),
+            ),
             calendarBuilders: CalendarBuilders(
+              disabledBuilder: (context, day, focusedDay) {
+                if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
+                  return Container(
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      shape: BoxShape.rectangle,
+                    ),
+                    child: Text(
+                      '${day.day}',
+                      style: TextStyle(color: Colors.grey[400]),
+                    ),
+                  );
+                }
+                return null;
+              },
               markerBuilder: (context, date, events) {
                 final dayType = calendarProvider.getDayType(date);
                 if (dayType != DayType.none) {
@@ -106,30 +137,35 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildMarker(DayType dayType) {
+    final colorProvider = Provider.of<ColorProvider>(context, listen: false);
     Color color;
-    IconData icon;
     switch (dayType) {
       case DayType.work:
         color = Colors.blue;
-        icon = Icons.work;
         break;
       case DayType.holiday:
-        color = Colors.red;
-        icon = Icons.beach_access;
+        color = colorProvider.holidayColor;
         break;
       case DayType.vacation:
-        color = Colors.green;
-        icon = Icons.airplanemode_active;
+        color = colorProvider.vacationColor;
         break;
       default:
         return const SizedBox.shrink();
     }
-    return Icon(icon, color: color, size: 16);
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.rectangle,
+      ),
+    );
   }
 
   Widget _buildButtons() {
     final l10n = AppLocalizations.of(context)!;
     final calendarProvider = Provider.of<CalendarProvider>(context, listen: false);
+    final colorProvider = Provider.of<ColorProvider>(context, listen: false);
 
     return GridView.count(
       crossAxisCount: 2,
@@ -144,7 +180,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             }
             _clearSelection();
           });
-        }),
+        }, color: colorProvider.holidayColor),
         _buildButton(l10n.markAsVacation, () {
           setState(() {
             if (_rangeStart != null && _rangeEnd != null) {
@@ -154,10 +190,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
             }
             _clearSelection();
           });
-        }),
+        }, color: colorProvider.vacationColor),
         _buildButton(l10n.clearSelection, () {
           setState(() {
-            if (_selectedDay != null) {
+            if (_rangeStart != null && _rangeEnd != null) {
+              calendarProvider.clearDaysInRange(_rangeStart!, _rangeEnd!);
+            } else if (_selectedDay != null) {
               calendarProvider.clearDay(_selectedDay!);
             }
             _clearSelection();
@@ -167,11 +205,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
     );
   }
 
-  Widget _buildButton(String text, VoidCallback onPressed) {
+  Widget _buildButton(String text, VoidCallback onPressed, {Color? color}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton(
         onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: color != null ? Colors.white : null,
+        ),
         child: Text(text),
       ),
     );

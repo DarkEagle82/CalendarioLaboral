@@ -13,13 +13,10 @@ class SettingsScreen extends StatefulWidget {
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAliveClientMixin {
+class _SettingsScreenState extends State<SettingsScreen> {
   late TextEditingController _standardWorkdayController;
   late TextEditingController _intensiveWorkdayController;
   late TextEditingController _annualHoursController;
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -40,7 +37,6 @@ class _SettingsScreenState extends State<SettingsScreen> with AutomaticKeepAlive
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final l10n = AppLocalizations.of(context)!;
     final colorProvider = Provider.of<ColorProvider>(context);
     final settingsProvider = Provider.of<SettingsProvider>(context);

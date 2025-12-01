@@ -9,7 +9,7 @@ class SettingsProvider with ChangeNotifier {
   WorkDay _regularWorkDay = WorkDay(totalMinutes: 8 * 60);
   WorkDay _intensiveWorkDay = WorkDay(totalMinutes: 7 * 60 + 30);
   List<IntensiveRule> _intensiveRules = [];
-  double _annualHours = 1800;
+  double _annualHours = 1620;
   int _selectedYear = DateTime.now().year;
 
   WorkDay get regularWorkDay => _regularWorkDay;
