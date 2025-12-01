@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/screens/calendar_screen.dart';
-import 'package:myapp/screens/settings_screen.dart';
-import 'package:myapp/l10n/app_localizations.dart';
-import 'package:myapp/screens/summary_screen.dart';
+import 'package:calendario_laboral/screens/calendar_screen.dart';
+import 'package:calendario_laboral/screens/settings_screen.dart';
+import 'package:calendario_laboral/l10n/app_localizations.dart';
+import 'package:calendario_laboral/screens/summary_screen.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});

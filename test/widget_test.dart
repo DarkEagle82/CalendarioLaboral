@@ -2,12 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
-import 'package:myapp/main.dart';
-import 'package:myapp/providers/calendar_provider.dart';
-import 'package:myapp/providers/settings_provider.dart';
-import 'package:myapp/providers/theme_provider.dart';
-import 'package:myapp/screens/calendar_screen.dart';
-import 'package:myapp/screens/settings_screen.dart';
+import 'package:calendario_laboral/main.dart';
+import 'package:calendario_laboral/providers/calendar_provider.dart';
+import 'package:calendario_laboral/providers/settings_provider.dart';
+import 'package:calendario_laboral/providers/theme_provider.dart';
+import 'package:calendario_laboral/screens/calendar_screen.dart';
+import 'package:calendario_laboral/screens/settings_screen.dart';
 
 void main() async {
   // Initialize locale data for tests
