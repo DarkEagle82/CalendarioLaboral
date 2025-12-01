@@ -1,4 +1,4 @@
-enum DayType { work, holiday, vacation, weekend, none }
+enum DayType { work, holiday, vacation, weekend, none, intensive }
 
 class WorkDay {
   final int totalMinutes;

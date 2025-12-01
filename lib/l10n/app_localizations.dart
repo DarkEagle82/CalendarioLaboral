@@ -101,331 +101,337 @@ abstract class AppLocalizations {
   /// No description provided for @calendar.
   ///
   /// In en, this message translates to:
-  /// **'Calendario'**
+  /// **'Calendar'**
   String get calendar;
 
   /// No description provided for @settings.
   ///
   /// In en, this message translates to:
-  /// **'Configuración'**
+  /// **'Settings'**
   String get settings;
 
   /// No description provided for @summary.
   ///
   /// In en, this message translates to:
-  /// **'Resumen'**
+  /// **'Summary'**
   String get summary;
 
   /// No description provided for @home.
   ///
   /// In en, this message translates to:
-  /// **'Inicio'**
+  /// **'Home'**
   String get home;
 
   /// No description provided for @standardWorkday.
   ///
   /// In en, this message translates to:
-  /// **'Jornada Estándar'**
+  /// **'Standard Workday'**
   String get standardWorkday;
 
   /// No description provided for @intensiveWorkday.
   ///
   /// In en, this message translates to:
-  /// **'Jornada Intensiva'**
+  /// **'Intensive Workday'**
   String get intensiveWorkday;
 
   /// No description provided for @annualHours.
   ///
   /// In en, this message translates to:
-  /// **'Horas Anuales'**
+  /// **'Annual Hours'**
   String get annualHours;
 
   /// No description provided for @save.
   ///
   /// In en, this message translates to:
-  /// **'Guardar'**
+  /// **'Save'**
   String get save;
 
   /// No description provided for @intensivePeriods.
   ///
   /// In en, this message translates to:
-  /// **'Períodos Intensivos'**
+  /// **'Intensive Periods'**
   String get intensivePeriods;
 
   /// No description provided for @addIntensivePeriod.
   ///
   /// In en, this message translates to:
-  /// **'Añadir Período Intensivo'**
+  /// **'Add Intensive Period'**
   String get addIntensivePeriod;
 
   /// No description provided for @selectDate.
   ///
   /// In en, this message translates to:
-  /// **'Seleccionar Fecha'**
+  /// **'Select Date'**
   String get selectDate;
 
   /// No description provided for @selectWeekDay.
   ///
   /// In en, this message translates to:
-  /// **'Seleccionar Día de la Semana'**
+  /// **'Select Weekday'**
   String get selectWeekDay;
 
   /// No description provided for @hours.
   ///
   /// In en, this message translates to:
-  /// **'Horas'**
+  /// **'Hours'**
   String get hours;
 
   /// No description provided for @minutes.
   ///
   /// In en, this message translates to:
-  /// **'Minutos'**
+  /// **'Minutes'**
   String get minutes;
 
   /// No description provided for @selectColor.
   ///
   /// In en, this message translates to:
-  /// **'Seleccionar Color'**
+  /// **'Select Color'**
   String get selectColor;
 
   /// No description provided for @english.
   ///
   /// In en, this message translates to:
-  /// **'Inglés'**
+  /// **'English'**
   String get english;
 
   /// No description provided for @spanish.
   ///
   /// In en, this message translates to:
-  /// **'Español'**
+  /// **'Spanish'**
   String get spanish;
 
   /// No description provided for @system.
   ///
   /// In en, this message translates to:
-  /// **'Sistema'**
+  /// **'System'**
   String get system;
 
   /// No description provided for @language.
   ///
   /// In en, this message translates to:
-  /// **'Idioma'**
+  /// **'Language'**
   String get language;
 
   /// No description provided for @theme.
   ///
   /// In en, this message translates to:
-  /// **'Tema'**
+  /// **'Theme'**
   String get theme;
 
   /// No description provided for @light.
   ///
   /// In en, this message translates to:
-  /// **'Claro'**
+  /// **'Light'**
   String get light;
 
   /// No description provided for @dark.
   ///
   /// In en, this message translates to:
-  /// **'Oscuro'**
+  /// **'Dark'**
   String get dark;
+
+  /// No description provided for @darkMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark Mode'**
+  String get darkMode;
 
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Calendario Laboral'**
+  /// **'Work Calendar'**
   String get appName;
 
   /// No description provided for @addRule.
   ///
   /// In en, this message translates to:
-  /// **'Añadir Regla'**
+  /// **'Add Rule'**
   String get addRule;
 
   /// No description provided for @ruleType.
   ///
   /// In en, this message translates to:
-  /// **'Tipo de Regla'**
+  /// **'Rule Type'**
   String get ruleType;
 
   /// No description provided for @dateRange.
   ///
   /// In en, this message translates to:
-  /// **'Rango de Fechas'**
+  /// **'Date Range'**
   String get dateRange;
 
   /// No description provided for @weeklyOnRange.
   ///
   /// In en, this message translates to:
-  /// **'Semanal en Rango'**
+  /// **'Weekly on Range'**
   String get weeklyOnRange;
 
   /// No description provided for @holidayEve.
   ///
   /// In en, this message translates to:
-  /// **'Víspera de Festivo'**
+  /// **'Holiday Eve'**
   String get holidayEve;
 
   /// No description provided for @startDate.
   ///
   /// In en, this message translates to:
-  /// **'Fecha de Inicio'**
+  /// **'Start Date'**
   String get startDate;
 
   /// No description provided for @endDate.
   ///
   /// In en, this message translates to:
-  /// **'Fecha de Fin'**
+  /// **'End Date'**
   String get endDate;
 
   /// No description provided for @weekday.
   ///
   /// In en, this message translates to:
-  /// **'Día de la Semana'**
+  /// **'Weekday'**
   String get weekday;
 
   /// No description provided for @monday.
   ///
   /// In en, this message translates to:
-  /// **'Lunes'**
+  /// **'Monday'**
   String get monday;
 
   /// No description provided for @tuesday.
   ///
   /// In en, this message translates to:
-  /// **'Martes'**
+  /// **'Tuesday'**
   String get tuesday;
 
   /// No description provided for @wednesday.
   ///
   /// In en, this message translates to:
-  /// **'Miércoles'**
+  /// **'Wednesday'**
   String get wednesday;
 
   /// No description provided for @thursday.
   ///
   /// In en, this message translates to:
-  /// **'Jueves'**
+  /// **'Thursday'**
   String get thursday;
 
   /// No description provided for @friday.
   ///
   /// In en, this message translates to:
-  /// **'Viernes'**
+  /// **'Friday'**
   String get friday;
 
   /// No description provided for @saturday.
   ///
   /// In en, this message translates to:
-  /// **'Sábado'**
+  /// **'Saturday'**
   String get saturday;
 
   /// No description provided for @sunday.
   ///
   /// In en, this message translates to:
-  /// **'Domingo'**
+  /// **'Sunday'**
   String get sunday;
 
   /// No description provided for @confirm.
   ///
   /// In en, this message translates to:
-  /// **'Confirmar'**
+  /// **'Confirm'**
   String get confirm;
 
   /// No description provided for @cancel.
   ///
   /// In en, this message translates to:
-  /// **'Cancelar'**
+  /// **'Cancel'**
   String get cancel;
 
   /// No description provided for @totalHoursWorked.
   ///
   /// In en, this message translates to:
-  /// **'Horas Totales Trabajadas'**
+  /// **'Total Hours Worked'**
   String get totalHoursWorked;
 
   /// No description provided for @remainingHours.
   ///
   /// In en, this message translates to:
-  /// **'Horas Restantes'**
+  /// **'Remaining Hours'**
   String get remainingHours;
 
   /// No description provided for @equivalentDays.
   ///
   /// In en, this message translates to:
-  /// **'Días Equivalentes'**
+  /// **'Equivalent Days'**
   String get equivalentDays;
 
   /// No description provided for @totalWorkingDays.
   ///
   /// In en, this message translates to:
-  /// **'Días Totales Trabajados'**
+  /// **'Total Working Days'**
   String get totalWorkingDays;
 
   /// No description provided for @clearSelection.
   ///
   /// In en, this message translates to:
-  /// **'Limpiar Selección'**
+  /// **'Clear Selection'**
   String get clearSelection;
 
   /// No description provided for @markAsHoliday.
   ///
   /// In en, this message translates to:
-  /// **'Marcar como Festivo'**
+  /// **'Mark as Holiday'**
   String get markAsHoliday;
 
   /// No description provided for @markAsVacation.
   ///
   /// In en, this message translates to:
-  /// **'Marcar como Vacaciones'**
+  /// **'Mark as Vacation'**
   String get markAsVacation;
 
   /// No description provided for @noRulesDefined.
   ///
   /// In en, this message translates to:
-  /// **'No hay reglas definidas. Pulsa \'+\' para añadir una.'**
+  /// **'No rules defined. Press \'+\' to add one.'**
   String get noRulesDefined;
 
   /// No description provided for @delete.
   ///
   /// In en, this message translates to:
-  /// **'Eliminar'**
+  /// **'Delete'**
   String get delete;
 
   /// No description provided for @confirmDeletion.
   ///
   /// In en, this message translates to:
-  /// **'Confirmar Eliminación'**
+  /// **'Confirm Deletion'**
   String get confirmDeletion;
 
   /// No description provided for @areYouSureYouWantToDeleteThisRule.
   ///
   /// In en, this message translates to:
-  /// **'¿Estás seguro de que quieres eliminar esta regla?'**
+  /// **'Are you sure you want to delete this rule?'**
   String get areYouSureYouWantToDeleteThisRule;
 
   /// No description provided for @workdayHours.
   ///
   /// In en, this message translates to:
-  /// **'Horas de la Jornada'**
+  /// **'Workday Hours'**
   String get workdayHours;
 
   /// No description provided for @chooseThemeColor.
   ///
   /// In en, this message translates to:
-  /// **'Elegir Color del Tema'**
+  /// **'Choose Theme Color'**
   String get chooseThemeColor;
 
   /// No description provided for @holiday.
   ///
   /// In en, this message translates to:
-  /// **'Festivo'**
+  /// **'Holiday'**
   String get holiday;
 
   /// No description provided for @vacation.
   ///
   /// In en, this message translates to:
-  /// **'Vacaciones'**
+  /// **'Vacation'**
   String get vacation;
 }
 

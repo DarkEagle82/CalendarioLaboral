@@ -21,6 +21,7 @@
     "theme": "Tema",
     "light": "Claro",
     "dark": "Oscuro",
+    "darkMode": "Modo Oscuro",
     "appName": "Calendario Laboral",
     "addRule": "Añadir Regla",
     "ruleType": "Tipo de Regla",

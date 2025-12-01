@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../l10n/app_localizations.dart';
-import '../models/day_entry.dart';
 import '../models/work_day.dart';
 import '../providers/calendar_provider.dart';
 import '../providers/color_provider.dart';
@@ -42,96 +41,98 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          TableCalendar(
-            locale: Localizations.localeOf(context).toString(),
-            firstDay: DateTime.utc(2020, 1, 1),
-            lastDay: DateTime.utc(2030, 12, 31),
-            focusedDay: calendarProvider.focusedDay,
-            calendarFormat: _calendarFormat,
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false,
-            ),
-            rangeSelectionMode: _rangeSelectionMode,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            availableCalendarFormats: const {
-              CalendarFormat.month: 'Month',
-            },
-            enabledDayPredicate: (day) {
-              return day.weekday != DateTime.saturday && day.weekday != DateTime.sunday;
-            },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            TableCalendar(
+              locale: Localizations.localeOf(context).toString(),
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: calendarProvider.focusedDay,
+              calendarFormat: _calendarFormat,
+              headerStyle: const HeaderStyle(
+                formatButtonVisible: false,
+              ),
+              rangeSelectionMode: _rangeSelectionMode,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              rangeStartDay: _rangeStart,
+              rangeEndDay: _rangeEnd,
+              startingDayOfWeek: StartingDayOfWeek.monday,
+              availableCalendarFormats: const {
+                CalendarFormat.month: 'Month',
+              },
+              enabledDayPredicate: (day) {
+                return day.weekday != DateTime.saturday && day.weekday != DateTime.sunday;
+              },
+              onDaySelected: (selectedDay, focusedDay) {
+                if (!isSameDay(_selectedDay, selectedDay)) {
+                  setState(() {
+                    _selectedDay = selectedDay;
+                    calendarProvider.setFocusedDay(focusedDay);
+                    _rangeStart = null;
+                    _rangeEnd = null;
+                    _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                  });
+                }
+              },
+              onRangeSelected: (start, end, focusedDay) {
                 setState(() {
-                  _selectedDay = selectedDay;
+                  _selectedDay = null;
                   calendarProvider.setFocusedDay(focusedDay);
-                  _rangeStart = null;
-                  _rangeEnd = null;
-                  _rangeSelectionMode = RangeSelectionMode.toggledOff;
+                  _rangeStart = start;
+                  _rangeEnd = end;
+                  _rangeSelectionMode = RangeSelectionMode.toggledOn;
                 });
-              }
-            },
-            onRangeSelected: (start, end, focusedDay) {
-              setState(() {
-                _selectedDay = null;
+              },
+              onFormatChanged: (format) {
+                if (_calendarFormat != format) {
+                  setState(() {
+                    _calendarFormat = format;
+                  });
+                }
+              },
+              onPageChanged: (focusedDay) {
                 calendarProvider.setFocusedDay(focusedDay);
-                _rangeStart = start;
-                _rangeEnd = end;
-                _rangeSelectionMode = RangeSelectionMode.toggledOn;
-              });
-            },
-            onFormatChanged: (format) {
-              if (_calendarFormat != format) {
-                setState(() {
-                  _calendarFormat = format;
-                });
-              }
-            },
-            onPageChanged: (focusedDay) {
-              calendarProvider.setFocusedDay(focusedDay);
-            },
-            calendarStyle: CalendarStyle(
-              weekendTextStyle: TextStyle(color: Colors.grey[500]),
-            ),
-            calendarBuilders: CalendarBuilders(
-              disabledBuilder: (context, day, focusedDay) {
-                if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
-                  return Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.rectangle,
-                    ),
-                    child: Text(
-                      '${day.day}',
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                  );
-                }
-                return null;
               },
-              markerBuilder: (context, date, events) {
-                final dayType = calendarProvider.getDayType(date);
-                if (dayType != DayType.none) {
-                  return Positioned(
-                    right: 1,
-                    bottom: 1,
-                    child: _buildMarker(dayType),
-                  );
-                }
-                return null;
-              },
+              calendarStyle: CalendarStyle(
+                weekendTextStyle: TextStyle(color: Colors.grey[500]),
+              ),
+              calendarBuilders: CalendarBuilders(
+                disabledBuilder: (context, day, focusedDay) {
+                  if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
+                    return Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        shape: BoxShape.rectangle,
+                      ),
+                      child: Text(
+                        '${day.day}',
+                        style: TextStyle(color: Colors.grey[400]),
+                      ),
+                    );
+                  }
+                  return null;
+                },
+                markerBuilder: (context, date, events) {
+                  final dayType = calendarProvider.getDayType(date);
+                  if (dayType != DayType.none) {
+                    return Positioned(
+                      right: 1,
+                      bottom: 1,
+                      child: _buildMarker(dayType),
+                    );
+                  }
+                  return null;
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 8.0),
-          Expanded(
-            child: _buildButtons(),
-          ),
-        ],
+            const SizedBox(height: 8.0),
+            _buildButtons(),
+            const SizedBox(height: 16.0),
+            _buildLegend(),
+          ],
+        ),
       ),
     );
   }
@@ -148,6 +149,9 @@ class _CalendarScreenState extends State<CalendarScreen> {
         break;
       case DayType.vacation:
         color = colorProvider.vacationColor;
+        break;
+      case DayType.intensive:
+        color = colorProvider.intensiveWorkdayColor;
         break;
       default:
         return const SizedBox.shrink();
@@ -168,6 +172,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
     final colorProvider = Provider.of<ColorProvider>(context, listen: false);
 
     return GridView.count(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
       childAspectRatio: 3,
       children: [
@@ -216,6 +222,40 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         child: Text(text),
       ),
+    );
+  }
+
+  Widget _buildLegend() {
+    final l10n = AppLocalizations.of(context)!;
+    final colorProvider = Provider.of<ColorProvider>(context, listen: false);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildLegendItem(colorProvider.holidayColor, l10n.holiday),
+          _buildLegendItem(colorProvider.vacationColor, l10n.vacation),
+          _buildLegendItem(colorProvider.intensiveWorkdayColor, l10n.intensiveWorkday),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLegendItem(Color color, String label) {
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Text(label),
+      ],
     );
   }
 

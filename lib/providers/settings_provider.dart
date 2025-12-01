@@ -6,8 +6,8 @@ import '../models/work_day.dart';
 import '../models/intensive_period.dart';
 
 class SettingsProvider with ChangeNotifier {
-  WorkDay _regularWorkDay = WorkDay(totalMinutes: 8 * 60);
-  WorkDay _intensiveWorkDay = WorkDay(totalMinutes: 7 * 60 + 30);
+  WorkDay _regularWorkDay = WorkDay(totalMinutes: 7 * 60 + 30);
+  WorkDay _intensiveWorkDay = WorkDay(totalMinutes: 7 * 60);
   List<IntensiveRule> _intensiveRules = [];
   double _annualHours = 1620;
   int _selectedYear = DateTime.now().year;
@@ -91,10 +91,16 @@ class SettingsProvider with ChangeNotifier {
 
     if (prefs.containsKey('regularWorkDay')) {
       _regularWorkDay = WorkDay.fromJson(json.decode(prefs.getString('regularWorkDay')!));
+    } else {
+      _regularWorkDay = WorkDay(totalMinutes: 7 * 60 + 30); // Default: 7.5 hours
     }
+
     if (prefs.containsKey('intensiveWorkDay')) {
       _intensiveWorkDay = WorkDay.fromJson(json.decode(prefs.getString('intensiveWorkDay')!));
+    } else {
+       _intensiveWorkDay = WorkDay(totalMinutes: 7 * 60); // Default: 7 hours
     }
+
     if (prefs.containsKey('intensiveRules')) {
       final rules = prefs.getStringList('intensiveRules')!;
       _intensiveRules = rules.map((r) => IntensiveRule.fromJson(json.decode(r))).toList();

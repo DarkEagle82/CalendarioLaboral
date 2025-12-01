@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'l10n/app_localizations.dart';
@@ -40,8 +41,17 @@ class MyApp extends StatelessWidget {
             theme: themeProvider.lightTheme,
             darkTheme: themeProvider.darkTheme,
             themeMode: themeProvider.themeMode,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en', ''),
+              Locale('es', ''),
+            ],
+            locale: const Locale('es'), // Force Spanish for the app
             home: const MainScreen(),
           );
         },
@@ -61,8 +71,8 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
-    SummaryScreen(),
     CalendarScreen(),
+    SummaryScreen(),
     SettingsScreen(),
   ];
 
@@ -74,6 +84,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // This will now work correctly because AppLocalizations.delegate is provided in MaterialApp
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -83,12 +94,12 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.summarize),
-            label: l10n.summary,
-          ),
-          BottomNavigationBarItem(
             icon: const Icon(Icons.calendar_today),
             label: l10n.calendar,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.summarize),
+            label: l10n.summary,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings),
@@ -97,6 +108,9 @@ class _MainScreenState extends State<MainScreen> {
         ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
       ),
     );
   }

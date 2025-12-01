@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(l10n.calendar2025),
+        title: Text(l10n.calendar),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),

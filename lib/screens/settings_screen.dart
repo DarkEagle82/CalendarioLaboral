@@ -5,6 +5,7 @@ import 'package:myapp/l10n/app_localizations.dart';
 import 'package:myapp/models/intensive_period.dart';
 import 'package:myapp/providers/color_provider.dart';
 import 'package:myapp/providers/settings_provider.dart';
+import 'package:myapp/providers/theme_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -50,27 +51,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               Text(l10n.settings, style: Theme.of(context).textTheme.headlineMedium),
               const SizedBox(height: 16),
-              Text(l10n.theme, style: Theme.of(context).textTheme.titleLarge),
+              _buildThemeSection(l10n),
+              const SizedBox(height: 16),
               _buildColorSettings(l10n, colorProvider),
               const SizedBox(height: 24),
               Text(l10n.workdayHours, style: Theme.of(context).textTheme.titleLarge),
               _buildHoursSettings(l10n, settingsProvider),
               const SizedBox(height: 24),
               Text(l10n.intensivePeriods, style: Theme.of(context).textTheme.titleLarge),
-              _buildIntensiveRulesList(context, settingsProvider, l10n),
+              _buildIntensiveRulesList(settingsProvider, l10n),
             ],
           ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddRuleTypeDialog(context, settingsProvider, l10n),
+        onPressed: () => _showAddRuleTypeDialog(settingsProvider, l10n),
         tooltip: l10n.addRule,
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildIntensiveRulesList(BuildContext context, SettingsProvider settingsProvider, AppLocalizations l10n) {
+  Widget _buildThemeSection(AppLocalizations l10n) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    return Row(
+      children: [
+        Text(l10n.theme, style: Theme.of(context).textTheme.titleLarge),
+        const Spacer(),
+        IconButton(
+          icon: Icon(themeProvider.themeMode == ThemeMode.dark 
+                       ? Icons.light_mode 
+                       : Icons.dark_mode_outlined),
+          tooltip: l10n.darkMode,
+          onPressed: () => themeProvider.toggleTheme(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildIntensiveRulesList(SettingsProvider settingsProvider, AppLocalizations l10n) {
     if (settingsProvider.intensiveRules.isEmpty) {
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 24.0),
@@ -90,7 +109,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(rule.description, style: Theme.of(context).textTheme.bodyLarge),
             trailing: IconButton(
               icon: const Icon(Icons.delete, color: Colors.redAccent),
-              onPressed: () => _showDeleteConfirmationDialog(context, settingsProvider, rule.id, l10n),
+              onPressed: () => _showDeleteConfirmationDialog(settingsProvider, rule.id, l10n),
               tooltip: l10n.delete,
             ),
           ),
@@ -99,10 +118,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _showAddRuleTypeDialog(BuildContext context, SettingsProvider settingsProvider, AppLocalizations l10n) {
+  void _showAddRuleTypeDialog(SettingsProvider settingsProvider, AppLocalizations l10n) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.ruleType),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -111,24 +130,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
               leading: const Icon(Icons.date_range),
               title: Text(l10n.dateRange),
               onTap: () {
-                Navigator.of(context).pop();
-                _showAddDateRangeRuleDialog(context, settingsProvider, l10n);
+                Navigator.of(dialogContext).pop();
+                _showAddDateRangeRuleDialog(settingsProvider);
               },
             ),
             ListTile(
               leading: const Icon(Icons.view_week),
               title: Text(l10n.weeklyOnRange),
               onTap: () {
-                 Navigator.of(context).pop();
-                _showAddWeeklyRuleDialog(context, settingsProvider, l10n);
+                Navigator.of(dialogContext).pop();
+                _showAddWeeklyRuleDialog(settingsProvider, l10n);
               },
             ),
-             if (!settingsProvider.intensiveRules.any((r) => r.type == IntensiveRuleType.holidayEve))
+            if (!settingsProvider.intensiveRules.any((r) => r.type == IntensiveRuleType.holidayEve))
               ListTile(
                 leading: const Icon(Icons.celebration),
                 title: Text(l10n.holidayEve),
                 onTap: () {
-                  Navigator.of(context).pop();
+                  Navigator.of(dialogContext).pop();
                   settingsProvider.addIntensiveRule(HolidayEveRule());
                 },
               ),
@@ -138,78 +157,92 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  Future<void> _showAddDateRangeRuleDialog(BuildContext context, SettingsProvider settingsProvider, AppLocalizations l10n) async {
+  Future<void> _showAddDateRangeRuleDialog(SettingsProvider settingsProvider) async {
     final selectedYear = settingsProvider.selectedYear;
-    DateTime? startDate = await _selectDate(context, DateTime(selectedYear));
+    DateTime? startDate = await _selectDate(DateTime(selectedYear));
     if (startDate == null) return;
 
-    DateTime? endDate = await _selectDate(context, startDate);
+    if (!mounted) return;
+
+    DateTime? endDate = await _selectDate(startDate);
     if (endDate == null) return;
 
     if (endDate.isBefore(startDate)) {
-      // Show error
+      // Optionally, show an error to the user
       return;
     }
 
     settingsProvider.addIntensiveRule(DateRangeRule(startDate: startDate, endDate: endDate));
   }
 
-  Future<void> _showAddWeeklyRuleDialog(BuildContext context, SettingsProvider settingsProvider, AppLocalizations l10n) async {
+  Future<void> _showAddWeeklyRuleDialog(SettingsProvider settingsProvider, AppLocalizations l10n) async {
     final selectedYear = settingsProvider.selectedYear;
-    int selectedWeekday = 1; 
 
-    DateTime? startDate = await _selectDate(context, DateTime(selectedYear, 1, 1));
+    DateTime? startDate = await _selectDate(DateTime(selectedYear, 1, 1));
     if (startDate == null) return;
 
-    DateTime? endDate = await _selectDate(context, DateTime(selectedYear, 12, 31));
+    if (!mounted) return;
+
+    DateTime? endDate = await _selectDate(DateTime(selectedYear, 12, 31));
     if (endDate == null) return;
 
     if (endDate.isBefore(startDate)) {
-      // show error
+      // Optionally, show an error to the user
       return;
     }
 
-    await showDialog(
+    if (!mounted) return;
+
+    final int? chosenWeekday = await showDialog<int>(
       context: context,
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(l10n.selectWeekDay),
           content: DropdownButton<int>(
-            value: selectedWeekday,
+            value: 1,
             onChanged: (int? newValue) {
               if (newValue != null) {
                 Navigator.of(dialogContext).pop(newValue);
               }
             },
-            items: List.generate(7, (index) => 
-              DropdownMenuItem<int>(
+            items: List.generate(
+              7,
+              (index) => DropdownMenuItem<int>(
                 value: index + 1,
-                child: Text([l10n.monday, l10n.tuesday, l10n.wednesday, l10n.thursday, l10n.friday, l10n.saturday, l10n.sunday][index]),
-              )
+                child: Text([
+                  l10n.monday,
+                  l10n.tuesday,
+                  l10n.wednesday,
+                  l10n.thursday,
+                  l10n.friday,
+                  l10n.saturday,
+                  l10n.sunday
+                ][index]),
+              ),
             ),
           ),
         );
       },
-    ).then((chosenWeekday) {
-        if(chosenWeekday != null) {
-          final rule = WeeklyOnRangeRule(startDate: startDate, endDate: endDate, weekday: chosenWeekday);
-          settingsProvider.addIntensiveRule(rule);
-        }
-    });
+    );
+
+    if (chosenWeekday != null) {
+      final rule = WeeklyOnRangeRule(startDate: startDate, endDate: endDate, weekday: chosenWeekday);
+      settingsProvider.addIntensiveRule(rule);
+    }
   }
 
-  void _showDeleteConfirmationDialog(BuildContext context, SettingsProvider settingsProvider, String ruleId, AppLocalizations l10n) {
+  void _showDeleteConfirmationDialog(SettingsProvider settingsProvider, String ruleId, AppLocalizations l10n) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.confirmDeletion),
         content: Text(l10n.areYouSureYouWantToDeleteThisRule),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.cancel)),
+          TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: Text(l10n.cancel)),
           TextButton(
             onPressed: () {
               settingsProvider.removeIntensiveRule(ruleId);
-              Navigator.of(context).pop();
+              Navigator.of(dialogContext).pop();
             },
             child: Text(l10n.delete, style: const TextStyle(color: Colors.redAccent)),
           ),
@@ -218,24 +251,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-
   Widget _buildColorSettings(AppLocalizations l10n, ColorProvider colorProvider) {
     return Column(
       children: [
         ListTile(
           title: Text(l10n.holiday),
           trailing: CircleAvatar(backgroundColor: colorProvider.holidayColor),
-          onTap: () => _showColorPicker(context, l10n, colorProvider.holidayColor, (color) => colorProvider.setHolidayColor(color)),
+          onTap: () => _showColorPicker(l10n, colorProvider.holidayColor, (color) => colorProvider.setHolidayColor(color)),
         ),
         ListTile(
           title: Text(l10n.vacation),
           trailing: CircleAvatar(backgroundColor: colorProvider.vacationColor),
-          onTap: () => _showColorPicker(context, l10n, colorProvider.vacationColor, (color) => colorProvider.setVacationColor(color)),
+          onTap: () => _showColorPicker(l10n, colorProvider.vacationColor, (color) => colorProvider.setVacationColor(color)),
         ),
         ListTile(
           title: Text(l10n.intensiveWorkday),
           trailing: CircleAvatar(backgroundColor: colorProvider.intensiveWorkdayColor),
-          onTap: () => _showColorPicker(context, l10n, colorProvider.intensiveWorkdayColor, (color) => colorProvider.setIntensiveWorkdayColor(color)),
+          onTap: () => _showColorPicker(l10n, colorProvider.intensiveWorkdayColor, (color) => colorProvider.setIntensiveWorkdayColor(color)),
         ),
       ],
     );
@@ -250,7 +282,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           decoration: InputDecoration(labelText: l10n.standardWorkday),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) {
-            try { settingsProvider.setStandardWorkdayHours(double.parse(value)); } catch(e) {/* ignore */}
+            try {
+              settingsProvider.setStandardWorkdayHours(double.parse(value));
+            } catch (e) { /* ignore */ }
           },
         ),
         const SizedBox(height: 16),
@@ -259,7 +293,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           decoration: InputDecoration(labelText: l10n.intensiveWorkday),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) {
-            try { settingsProvider.setIntensiveWorkdayHours(double.parse(value)); } catch(e) {/* ignore */}
+            try {
+              settingsProvider.setIntensiveWorkdayHours(double.parse(value));
+            } catch (e) { /* ignore */ }
           },
         ),
         const SizedBox(height: 16),
@@ -268,25 +304,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
           decoration: InputDecoration(labelText: l10n.annualHours),
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           onSubmitted: (value) {
-            try { settingsProvider.setAnnualHoursGoal(double.parse(value)); } catch(e) {/* ignore */}
+            try {
+              settingsProvider.setAnnualHoursGoal(double.parse(value));
+            } catch (e) { /* ignore */ }
           },
         ),
       ],
     );
   }
 
-  void _showColorPicker(BuildContext context, AppLocalizations l10n, Color initialColor, void Function(Color) onColorChanged) {
+  void _showColorPicker(AppLocalizations l10n, Color initialColor, void Function(Color) onColorChanged) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: Text(l10n.selectColor),
         content: SingleChildScrollView(child: ColorPicker(pickerColor: initialColor, onColorChanged: onColorChanged)),
-        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(l10n.confirm))],
+        actions: [TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: Text(l10n.confirm))],
       ),
     );
   }
 
-  Future<DateTime?> _selectDate(BuildContext context, DateTime initialDate) async {
+  Future<DateTime?> _selectDate(DateTime initialDate) async {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
     final selectedYear = settingsProvider.selectedYear;
     return await showDatePicker(

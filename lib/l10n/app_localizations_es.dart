@@ -75,6 +75,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dark => 'Oscuro';
 
   @override
+  String get darkMode => 'Modo Oscuro';
+
+  @override
   String get appName => 'Calendario Laboral';
 
   @override

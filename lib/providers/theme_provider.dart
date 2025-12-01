@@ -19,7 +19,7 @@ class ThemeProvider with ChangeNotifier {
 
   void _loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    _primaryColor = Color(prefs.getInt('primaryColor') ?? Colors.deepPurple.value);
+    _primaryColor = Color(prefs.getInt('primaryColor') ?? Colors.deepPurple.toARGB32());
     final isDark = prefs.getBool('isDarkMode') ?? false;
     _themeMode = isDark ? ThemeMode.dark : ThemeMode.light;
     notifyListeners();
@@ -27,7 +27,7 @@ class ThemeProvider with ChangeNotifier {
 
   void _saveTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setInt('primaryColor', _primaryColor.value);
+    prefs.setInt('primaryColor', _primaryColor.toARGB32());
     prefs.setBool('isDarkMode', _themeMode == ThemeMode.dark);
   }
 

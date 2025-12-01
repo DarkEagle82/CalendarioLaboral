@@ -10,14 +10,12 @@ class CalendarProvider with ChangeNotifier {
   late SettingsProvider _settingsProvider;
   Map<DateTime, DayEntry> _entries = {};
   DateTime _focusedDay = DateTime.now();
-  int? _lastLoadedYear;
 
   Map<DateTime, DayEntry> get entries => _entries;
   DateTime get focusedDay => _focusedDay;
 
   CalendarProvider(SettingsProvider settingsProvider) {
     _settingsProvider = settingsProvider;
-    _lastLoadedYear = _settingsProvider.selectedYear;
     _loadEntries();
   }
 
@@ -26,7 +24,6 @@ class CalendarProvider with ChangeNotifier {
     _settingsProvider = newSettings;
 
     if (oldYear != newSettings.selectedYear) {
-      _lastLoadedYear = newSettings.selectedYear;
       _loadEntries(); // This will load data for the new year and notify listeners
     } else {
       notifyListeners(); // For other settings changes like work hours, colors, etc.
@@ -80,14 +77,41 @@ class CalendarProvider with ChangeNotifier {
 
   DayType getDayType(DateTime day) {
     final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
-    return _entries[dateWithoutTime]?.dayType ?? DayType.none;
+
+    // An explicit entry (holiday, vacation) overrides any rule.
+    if (_entries.containsKey(dateWithoutTime)) {
+      return _entries[dateWithoutTime]!.dayType;
+    }
+
+    // Check for weekends
+    if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
+      return DayType.weekend;
+    }
+
+    // Get all holidays to check for holiday eves
+    final holidays = _entries.entries
+        .where((entry) => entry.value.dayType == DayType.holiday)
+        .map((entry) => entry.key)
+        .toList();
+
+    // Check if the day is intensive based on rules
+    final isIntensive = _settingsProvider.intensiveRules.any((rule) => rule.isIntensive(day, holidays));
+    if (isIntensive) {
+      return DayType.intensive;
+    }
+
+    // It's a normal workday with no special status
+    return DayType.none;
   }
 
   WorkDay getWorkDay(DateTime day) {
-    final intensiveRules = _settingsProvider.intensiveRules;
-    bool isIntensive = intensiveRules.any((rule) => rule.isIntensive(day, []));
+    final dayType = getDayType(day);
 
-    return isIntensive ? _settingsProvider.intensiveWorkDay : _settingsProvider.regularWorkDay;
+    if (dayType == DayType.intensive) {
+      return _settingsProvider.intensiveWorkDay;
+    }
+    
+    return _settingsProvider.regularWorkDay;
   }
 
   double get totalHoursWorked {
@@ -97,22 +121,30 @@ class CalendarProvider with ChangeNotifier {
     final endDate = DateTime.utc(year, 12, 31);
 
     for (var day = startDate; day.isBefore(endDate.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
-      if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
-        continue;
-      }
+      final dayType = getDayType(day);
 
-      final entry = _entries[day];
-
-      if (entry != null) {
-        if (entry.dayType == DayType.holiday || entry.dayType == DayType.vacation) {
-          totalHours += getWorkDay(day).hours;
-        } else if (entry.dayType == DayType.work && entry.duration != null) {
-          totalHours += entry.duration!.inMinutes / 60;
-        } else {
-          totalHours += getWorkDay(day).hours;
-        }
-      } else {
-        totalHours += getWorkDay(day).hours;
+      switch (dayType) {
+        case DayType.intensive:
+          totalHours += _settingsProvider.intensiveWorkDay.hours;
+          break;
+        case DayType.none: // 'none' implies a standard workday
+          totalHours += _settingsProvider.regularWorkDay.hours;
+          break;
+        case DayType.holiday:
+        case DayType.vacation:
+        case DayType.weekend:
+          // 0 hours worked on these days
+          break;
+        case DayType.work:
+          // This case handles manually entered work hours, not yet implemented, but we can prepare for it.
+          final entry = _entries[day];
+          if (entry != null && entry.duration != null) {
+            totalHours += entry.duration!.inMinutes / 60;
+          } else {
+            // Fallback to regular day hours if duration is not specified for a 'work' entry
+            totalHours += _settingsProvider.regularWorkDay.hours;
+          }
+          break;
       }
     }
     return totalHours;
@@ -125,14 +157,10 @@ class CalendarProvider with ChangeNotifier {
     final endDate = DateTime.utc(year, 12, 31);
 
     for (var day = startDate; day.isBefore(endDate.add(const Duration(days: 1))); day = day.add(const Duration(days: 1))) {
-      if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
-        continue;
+      final dayType = getDayType(day);
+      if (dayType != DayType.weekend && dayType != DayType.holiday && dayType != DayType.vacation) {
+        workingDays++;
       }
-      final entry = _entries[day];
-      if (entry != null && (entry.dayType == DayType.holiday || entry.dayType == DayType.vacation)) {
-        continue;
-      }
-      workingDays++;
     }
     return workingDays;
   }
