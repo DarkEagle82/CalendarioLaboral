@@ -1,10 +1,11 @@
-import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/day_entry.dart';
 import '../models/work_day.dart';
 import 'settings_provider.dart';
+import '../models/intensive_period.dart';
 
 class CalendarProvider with ChangeNotifier {
   late SettingsProvider _settingsProvider;
@@ -14,8 +15,7 @@ class CalendarProvider with ChangeNotifier {
   Map<DateTime, DayEntry> get entries => _entries;
   DateTime get focusedDay => _focusedDay;
 
-  CalendarProvider(SettingsProvider settingsProvider) {
-    _settingsProvider = settingsProvider;
+  CalendarProvider(this._settingsProvider) {
     _loadEntries();
   }
 
@@ -24,9 +24,9 @@ class CalendarProvider with ChangeNotifier {
     _settingsProvider = newSettings;
 
     if (oldYear != newSettings.selectedYear) {
-      _loadEntries(); // This will load data for the new year and notify listeners
+      _loadEntries(); 
     } else {
-      notifyListeners(); // For other settings changes like work hours, colors, etc.
+      notifyListeners(); 
     }
   }
 
@@ -78,29 +78,24 @@ class CalendarProvider with ChangeNotifier {
   DayType getDayType(DateTime day) {
     final dateWithoutTime = DateTime.utc(day.year, day.month, day.day);
 
-    // An explicit entry (holiday, vacation) overrides any rule.
     if (_entries.containsKey(dateWithoutTime)) {
       return _entries[dateWithoutTime]!.dayType;
     }
 
-    // Check for weekends
     if (day.weekday == DateTime.saturday || day.weekday == DateTime.sunday) {
       return DayType.weekend;
     }
 
-    // Get all holidays to check for holiday eves
     final holidays = _entries.entries
         .where((entry) => entry.value.dayType == DayType.holiday)
         .map((entry) => entry.key)
         .toList();
 
-    // Check if the day is intensive based on rules
     final isIntensive = _settingsProvider.intensiveRules.any((rule) => rule.isIntensive(day, holidays));
     if (isIntensive) {
       return DayType.intensive;
     }
 
-    // It's a normal workday with no special status
     return DayType.none;
   }
 
@@ -125,24 +120,21 @@ class CalendarProvider with ChangeNotifier {
 
       switch (dayType) {
         case DayType.intensive:
-          totalHours += _settingsProvider.intensiveWorkDay.hours;
+          totalHours += _settingsProvider.intensiveWorkDay.totalHours;
           break;
-        case DayType.none: // 'none' implies a standard workday
-          totalHours += _settingsProvider.regularWorkDay.hours;
+        case DayType.none: 
+          totalHours += _settingsProvider.regularWorkDay.totalHours;
           break;
         case DayType.holiday:
         case DayType.vacation:
         case DayType.weekend:
-          // 0 hours worked on these days
           break;
         case DayType.work:
-          // This case handles manually entered work hours, not yet implemented, but we can prepare for it.
           final entry = _entries[day];
           if (entry != null && entry.duration != null) {
             totalHours += entry.duration!.inMinutes / 60;
           } else {
-            // Fallback to regular day hours if duration is not specified for a 'work' entry
-            totalHours += _settingsProvider.regularWorkDay.hours;
+            totalHours += _settingsProvider.regularWorkDay.totalHours;
           }
           break;
       }
@@ -170,7 +162,7 @@ class CalendarProvider with ChangeNotifier {
   double get remainingHours => annualHours - totalHoursWorked;
 
   double get equivalentDays {
-    final regularDayHours = _settingsProvider.regularWorkDay.hours;
+    final regularDayHours = _settingsProvider.regularWorkDay.totalHours;
     if (remainingHours >= 0 || regularDayHours <= 0) {
       return 0;
     }

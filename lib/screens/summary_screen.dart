@@ -19,7 +19,7 @@ class _SummaryScreenState extends State<SummaryScreen> with AutomaticKeepAliveCl
   Widget build(BuildContext context) {
     super.build(context);
     final l10n = AppLocalizations.of(context)!;
-    final calendarProvider = Provider.of<CalendarProvider>(context);
+    final calendarProvider = context.watch<CalendarProvider>();
 
     return Padding(
       padding: const EdgeInsets.all(16.0),

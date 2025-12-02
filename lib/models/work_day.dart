@@ -1,25 +1,22 @@
-enum DayType { work, holiday, vacation, weekend, none, intensive }
-
 class WorkDay {
-  final int totalMinutes;
+  final int hours;
+  final int minutes;
 
-  WorkDay({required this.totalMinutes});
+  WorkDay({required this.hours, required this.minutes});
 
-  int get hours => totalMinutes ~/ 60;
-  int get minutes => totalMinutes % 60;
-
-  Map<String, dynamic> toJson() => {
-        'totalMinutes': totalMinutes,
-      };
+  double get totalHours => hours + (minutes / 60.0);
 
   factory WorkDay.fromJson(Map<String, dynamic> json) {
     return WorkDay(
-      totalMinutes: json['totalMinutes'],
+      hours: json['hours'],
+      minutes: json['minutes'],
     );
   }
 
-  @override
-  String toString() {
-    return '$hours:${minutes.toString().padLeft(2, '0')}';
+  Map<String, dynamic> toJson() {
+    return {
+      'hours': hours,
+      'minutes': minutes,
+    };
   }
 }

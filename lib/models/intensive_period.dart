@@ -48,9 +48,9 @@ class DateRangeRule extends IntensiveRule {
 
   @override
   bool isIntensive(DateTime date, List<DateTime> holidays) {
-    final normalizedDate = DateTime(date.year, date.month, date.day);
-    final normalizedStartDate = DateTime(startDate.year, startDate.month, startDate.day);
-    final normalizedEndDate = DateTime(endDate.year, endDate.month, endDate.day);
+    final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+    final normalizedStartDate = DateTime.utc(startDate.year, startDate.month, startDate.day);
+    final normalizedEndDate = DateTime.utc(endDate.year, endDate.month, endDate.day);
 
     return !normalizedDate.isBefore(normalizedStartDate) && !normalizedDate.isAfter(normalizedEndDate);
   }
@@ -78,37 +78,41 @@ class DateRangeRule extends IntensiveRule {
 class WeeklyOnRangeRule extends IntensiveRule {
   final DateTime startDate;
   final DateTime endDate;
-  final int weekday; // 1 for Monday, 7 for Sunday
+  final List<int> weekdays; // 1 for Monday, 7 for Sunday
 
   WeeklyOnRangeRule({
     required this.startDate,
     required this.endDate,
-    required this.weekday,
+    required this.weekdays,
   }) : super(type: IntensiveRuleType.weeklyOnRange);
 
   @override
   bool isIntensive(DateTime date, List<DateTime> holidays) {
-    if (date.weekday != weekday) {
+    if (!weekdays.contains(date.weekday)) {
       return false;
     }
-    final normalizedDate = DateTime(date.year, date.month, date.day);
-    final normalizedStartDate = DateTime(startDate.year, startDate.month, startDate.day);
-    final normalizedEndDate = DateTime(endDate.year, endDate.month, endDate.day);
+    final normalizedDate = DateTime.utc(date.year, date.month, date.day);
+    final normalizedStartDate = DateTime.utc(startDate.year, startDate.month, startDate.day);
+    final normalizedEndDate = DateTime.utc(endDate.year, endDate.month, endDate.day);
 
     return !normalizedDate.isBefore(normalizedStartDate) && !normalizedDate.isAfter(normalizedEndDate);
   }
 
   String get _weekdayString {
-      switch (weekday) {
-      case 1: return 'Lunes';
-      case 2: return 'Martes';
-      case 3: return 'Miércoles';
-      case 4: return 'Jueves';
-      case 5: return 'Viernes';
-      case 6: return 'Sábado';
-      case 7: return 'Domingo';
-      default: return '';
-    }
+    // Sort weekdays to ensure consistent order (e.g., Mon, Tue, not Tue, Mon)
+    final sortedDays = List<int>.from(weekdays)..sort();
+    return sortedDays.map((day) {
+      switch (day) {
+        case 1: return 'Lun';
+        case 2: return 'Mar';
+        case 3: return 'Mié';
+        case 4: return 'Jue';
+        case 5: return 'Vie';
+        case 6: return 'Sáb';
+        case 7: return 'Dom';
+        default: return '';
+      }
+    }).join(', ');
   }
 
   @override
@@ -121,14 +125,14 @@ class WeeklyOnRangeRule extends IntensiveRule {
         'id': id,
         'startDate': startDate.toIso8601String(),
         'endDate': endDate.toIso8601String(),
-        'weekday': weekday,
+        'weekdays': weekdays,
       };
 
     static WeeklyOnRangeRule fromJson(Map<String, dynamic> json) {
     return WeeklyOnRangeRule(
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
-      weekday: json['weekday'],
+      weekdays: List<int>.from(json['weekdays']),
     );
   }
 }
@@ -144,16 +148,15 @@ class HolidayEveRule extends IntensiveRule {
       return false;
     }
     
-    final normalizedDate = DateTime(date.year, date.month, date.day);
+    final normalizedDate = DateTime.utc(date.year, date.month, date.day);
     if(holidays.any((holiday) => holiday.year == normalizedDate.year && holiday.month == normalizedDate.month && holiday.day == normalizedDate.day)) {
       return false;
     }
 
     final nextDay = normalizedDate.add(const Duration(days: 1));
-    return holidays.any((holiday) =>
-        holiday.year == nextDay.year &&
-        holiday.month == nextDay.month &&
-        holiday.day == nextDay.day);
+    final normalizedHolidays = holidays.map((h) => DateTime.utc(h.year, h.month, h.day)).toList();
+
+    return normalizedHolidays.any((holiday) => holiday == nextDay);
   }
 
   @override
