@@ -8,11 +8,11 @@ enum IntensiveRuleType {
 }
 
 // Base class for all intensive rules
-abstract class IntensiveRule {
+abstract class IntensivePeriodRule {
   final IntensiveRuleType type;
   final String id;
 
-  IntensiveRule({required this.type}) : id = UniqueKey().toString();
+  IntensivePeriodRule({required this.type}) : id = UniqueKey().toString();
 
   // Method to check if a date complies with the rule
   bool isIntensive(DateTime date, List<DateTime> holidays);
@@ -24,7 +24,7 @@ abstract class IntensiveRule {
   String get description;
 
   // Factory constructor to create the correct rule from JSON
-  factory IntensiveRule.fromJson(Map<String, dynamic> json) {
+  factory IntensivePeriodRule.fromJson(Map<String, dynamic> json) {
     switch (json['type']) {
       case 'IntensiveRuleType.dateRange':
         return DateRangeRule.fromJson(json);
@@ -39,7 +39,7 @@ abstract class IntensiveRule {
 }
 
 // Rule for a specific date range
-class DateRangeRule extends IntensiveRule {
+class DateRangeRule extends IntensivePeriodRule {
   final DateTime startDate;
   final DateTime endDate;
 
@@ -75,7 +75,7 @@ class DateRangeRule extends IntensiveRule {
 }
 
 // Rule for a specific day of the week within a date range
-class WeeklyOnRangeRule extends IntensiveRule {
+class WeeklyOnRangeRule extends IntensivePeriodRule {
   final DateTime startDate;
   final DateTime endDate;
   final List<int> weekdays; // 1 for Monday, 7 for Sunday
@@ -138,7 +138,7 @@ class WeeklyOnRangeRule extends IntensiveRule {
 }
 
 // Rule for the day before a holiday
-class HolidayEveRule extends IntensiveRule {
+class HolidayEveRule extends IntensivePeriodRule {
   HolidayEveRule() : super(type: IntensiveRuleType.holidayEve);
 
   @override

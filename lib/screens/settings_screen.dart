@@ -9,11 +9,10 @@ class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  _SettingsScreenState createState() => _SettingsScreenState();
+  SettingsScreenState createState() => SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
-  final _formKey = GlobalKey<FormState>();
+class SettingsScreenState extends State<SettingsScreen> {
 
   void _showAddIntensiveRuleDialog() {
     final settingsProvider = Provider.of<SettingsProvider>(context, listen: false);
@@ -21,7 +20,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     DateTime? startDate;
     DateTime? endDate;
     int? weekday;
-    String description = '';
 
     showDialog(
       context: context,
@@ -29,96 +27,85 @@ class _SettingsScreenState extends State<SettingsScreen> {
         builder: (ctx, setState) => AlertDialog(
           title: const Text('Añadir Regla de Jornada Intensiva'),
           content: SingleChildScrollView(
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    decoration: const InputDecoration(labelText: 'Descripción'),
-                    onSaved: (value) => description = value!,
-                    validator: (value) => value == null || value.isEmpty ? 'Introduce una descripción' : null,
-                  ),
-                  DropdownButton<IntensiveRuleType>(
-                    value: selectedType,
-                    items: [
-                      if (!settingsProvider.intensiveRules.any((r) => r.type == IntensiveRuleType.holidayEve))
-                        const DropdownMenuItem(
-                          value: IntensiveRuleType.holidayEve,
-                          child: Text('Víspera de festivo'),
-                        ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                DropdownButton<IntensiveRuleType>(
+                  value: selectedType,
+                  items: [
+                    if (!settingsProvider.intensiveRules.any((r) => r.type == IntensiveRuleType.holidayEve))
                       const DropdownMenuItem(
-                        value: IntensiveRuleType.dateRange,
-                        child: Text('Rango de fechas'),
+                        value: IntensiveRuleType.holidayEve,
+                        child: Text('Víspera de festivo'),
                       ),
-                      const DropdownMenuItem(
-                        value: IntensiveRuleType.weekly,
-                        child: Text('Día de la semana'),
-                      ),
-                    ],
-                    onChanged: (value) => setState(() => selectedType = value),
-                  ),
-                  if (selectedType == IntensiveRuleType.dateRange)
-                    ...[
-                      ListTile(
-                        title: Text(startDate == null ? 'Fecha de inicio' : DateFormat.yMd().format(startDate!)),
-                        trailing: const Icon(Icons.calendar_today),
-                        onTap: () async {
-                          final picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
-                          if (picked != null) setState(() => startDate = picked);
-                        },
-                      ),
-                      ListTile(
-                        title: Text(endDate == null ? 'Fecha de fin' : DateFormat.yMd().format(endDate!)),
-                        trailing: const Icon(Icons.calendar_today),
-                        onTap: () async {
-                          final picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
-                          if (picked != null) setState(() => endDate = picked);
-                        },
-                      ),
-                    ],
-                  if (selectedType == IntensiveRuleType.weekly)
-                    DropdownButton<int>(
-                      value: weekday,
-                      hint: const Text('Selecciona un día'),
-                      items: const [
-                        DropdownMenuItem(value: DateTime.monday, child: Text('Lunes')),
-                        DropdownMenuItem(value: DateTime.tuesday, child: Text('Martes')),
-                        DropdownMenuItem(value: DateTime.wednesday, child: Text('Miércoles')),
-                        DropdownMenuItem(value: DateTime.thursday, child: Text('Jueves')),
-                        DropdownMenuItem(value: DateTime.friday, child: Text('Viernes')),
-                      ],
-                      onChanged: (value) => setState(() => weekday = value),
+                    const DropdownMenuItem(
+                      value: IntensiveRuleType.dateRange,
+                      child: Text('Rango de fechas'),
                     ),
-                ],
-              ),
+                    const DropdownMenuItem(
+                      value: IntensiveRuleType.weeklyOnRange,
+                      child: Text('Día de la semana en rango'),
+                    ),
+                  ],
+                  onChanged: (value) => setState(() => selectedType = value),
+                ),
+                if (selectedType == IntensiveRuleType.dateRange || selectedType == IntensiveRuleType.weeklyOnRange)
+                  ...[
+                    ListTile(
+                      title: Text(startDate == null ? 'Fecha de inicio' : DateFormat.yMd().format(startDate!)),
+                      trailing: const Icon(Icons.calendar_today),
+                      onTap: () async {
+                        final picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
+                        if (picked != null) setState(() => startDate = picked);
+                      },
+                    ),
+                    ListTile(
+                      title: Text(endDate == null ? 'Fecha de fin' : DateFormat.yMd().format(endDate!)),
+                      trailing: const Icon(Icons.calendar_today),
+                      onTap: () async {
+                        final picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(2000), lastDate: DateTime(2101));
+                        if (picked != null) setState(() => endDate = picked);
+                      },
+                    ),
+                  ],
+                if (selectedType == IntensiveRuleType.weeklyOnRange)
+                  DropdownButton<int>(
+                    value: weekday,
+                    hint: const Text('Selecciona un día'),
+                    items: const [
+                      DropdownMenuItem(value: DateTime.monday, child: Text('Lunes')),
+                      DropdownMenuItem(value: DateTime.tuesday, child: Text('Martes')),
+                      DropdownMenuItem(value: DateTime.wednesday, child: Text('Miércoles')),
+                      DropdownMenuItem(value: DateTime.thursday, child: Text('Jueves')),
+                      DropdownMenuItem(value: DateTime.friday, child: Text('Viernes')),
+                    ],
+                    onChanged: (value) => setState(() => weekday = value),
+                  ),
+              ],
             ),
           ),
           actions: [
             TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Cancelar')),
             ElevatedButton(
               onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
                   IntensivePeriodRule newRule;
                   switch (selectedType) {
                     case IntensiveRuleType.dateRange:
                       if (startDate == null || endDate == null) return;
-                      newRule = IntensivePeriodRule.dateRange(description: description, start: startDate!, end: endDate!);
+                      newRule = DateRangeRule(startDate: startDate!, endDate: endDate!);
                       break;
-                    case IntensiveRuleType.weekly:
-                      if (weekday == null) return;
-                      newRule = IntensivePeriodRule.weekly(description: description, weekday: weekday!);
+                    case IntensiveRuleType.weeklyOnRange:
+                      if (startDate == null || endDate == null || weekday == null) return;
+                      newRule = WeeklyOnRangeRule(startDate: startDate!, endDate: endDate!, weekdays: [weekday!]);
                       break;
                     case IntensiveRuleType.holidayEve:
-                      newRule = IntensivePeriodRule.holidayEve(description: description);
+                      newRule = HolidayEveRule();
                       break;
                     default:
                       return;
                   }
                   Provider.of<SettingsProvider>(context, listen: false).addIntensiveRule(newRule);
                   Navigator.of(ctx).pop();
-                }
               },
               child: const Text('Añadir'),
             ),
@@ -185,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       title: Text(rule.description),
                       trailing: IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => settingsProvider.removeIntensiveRule(rule.id!),
+                        onPressed: () => settingsProvider.removeIntensiveRule(rule.id),
                       ),
                     );
                   },

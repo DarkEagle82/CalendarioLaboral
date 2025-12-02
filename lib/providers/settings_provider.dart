@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 
 import '../models/intensive_period.dart';
 import '../models/work_day.dart';
@@ -9,7 +8,7 @@ import '../models/work_day.dart';
 class SettingsProvider with ChangeNotifier {
   WorkDay _regularWorkDay = WorkDay(hours: 7, minutes: 30); 
   WorkDay _intensiveWorkDay = WorkDay(hours: 7, minutes: 0);
-  double _annualHours = 1720;
+  double _annualHours = 1620;
   List<IntensivePeriodRule> _intensiveRules = [];
   int _selectedYear = DateTime.now().year;
 
@@ -18,8 +17,6 @@ class SettingsProvider with ChangeNotifier {
   double get annualHours => _annualHours;
   List<IntensivePeriodRule> get intensiveRules => _intensiveRules;
   int get selectedYear => _selectedYear;
-
-  final Uuid _uuid = const Uuid();
 
   SettingsProvider() {
     _loadSettings();
@@ -48,7 +45,7 @@ class SettingsProvider with ChangeNotifier {
   }
 
   void addIntensiveRule(IntensivePeriodRule rule) {
-    _intensiveRules.add(rule.copyWith(id: _uuid.v4()));
+    _intensiveRules.add(rule);
     _saveSettings();
     notifyListeners();
   }
@@ -94,7 +91,7 @@ class SettingsProvider with ChangeNotifier {
     } else {
       _regularWorkDay = WorkDay(hours: 7, minutes: 30);
       _intensiveWorkDay = WorkDay(hours: 7, minutes: 0);
-      _annualHours = 1720;
+      _annualHours = 1620;
       _intensiveRules = [];
     }
     notifyListeners();

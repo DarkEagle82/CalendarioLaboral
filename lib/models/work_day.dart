@@ -1,3 +1,12 @@
+enum DayType {
+  work,
+  holiday,
+  vacation,
+  weekend,
+  intensive,
+  none,
+}
+
 class WorkDay {
   final int hours;
   final int minutes;

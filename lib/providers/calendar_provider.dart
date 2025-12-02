@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/day_entry.dart';
 import '../models/work_day.dart';
 import 'settings_provider.dart';
-import '../models/intensive_period.dart';
 
 class CalendarProvider with ChangeNotifier {
   late SettingsProvider _settingsProvider;
